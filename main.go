@@ -6,8 +6,6 @@ package main
 import (
   "log"
 	"net/http"
-
-  "gotank/lib"
 )
 
 const (
@@ -27,7 +25,7 @@ func startServer() {
 
 func routes() {
 	//http.Handle("/", http.FileServer(assetFS()))
-	http.HandleFunc("/ws", lib.WsHandler)
+	http.HandleFunc("/ws", wsHandler)
 }
 
 // func assetFS() http.FileSystem {

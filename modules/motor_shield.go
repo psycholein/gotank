@@ -1,9 +1,6 @@
 package modules
 
-import (
-  "github.com/kidoman/embd"
-  _ "github.com/kidoman/embd/host/rpi"
-)
+import "modules/motor_shield"
 
 func init() {
 }

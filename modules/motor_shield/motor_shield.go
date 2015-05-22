@@ -1,6 +1,6 @@
 package motor_shield
 
 import (
-  "gotank/embd"
-  _ "gotank/embd/host/rpi"
+  "gotank/libs/embd"
+  _ "gotank/libs/embd/host/rpi"
 )

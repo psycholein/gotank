@@ -3,7 +3,7 @@ package main
 import (
   "log"
   "net/http"
-  "gotank/websocket"
+  "gotank/libs/websocket"
 )
 
 var upgrader = websocket.Upgrader{

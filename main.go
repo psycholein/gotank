@@ -4,21 +4,21 @@
 package main
 
 import (
-  "log"
+	"log"
 	"net/http"
 )
 
 const (
-  Addr = ":3000"
+	addr = ":3000"
 )
 
 func main() {
-  startServer()
+	startServer()
 }
 
 func startServer() {
 	routes()
-	if err := http.ListenAndServe(Addr, nil); err != nil {
+	if err := http.ListenAndServe(addr, nil); err != nil {
 		log.Fatal("ListenAndServe:", err)
 	}
 }

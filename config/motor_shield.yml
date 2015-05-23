@@ -1,0 +1,11 @@
+motor1:
+  latch: 21
+  clk: 22
+  enable: 15
+  data: 16
+  left:
+    num: 3
+    pwm: 12
+  right:
+    num: 4
+    pwm: 12

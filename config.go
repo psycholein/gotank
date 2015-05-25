@@ -13,16 +13,20 @@ type mainConfig struct {
 
 func initModules() {
 	m := mainConfig{}
-	b, err := ioutil.ReadFile("./config/modules.yml")
-	if err != nil {
-		log.Fatalf("error: %v", err)
-	}
-	err = yaml.Unmarshal(b, &m)
-	if err != nil {
-		log.Fatalf("error: %v", err)
-	}
+	readConfig("./config/modules.yml", &m)
 
 	for _, value := range m.Modules {
 		modules.InitModule(value)
+	}
+}
+
+func readConfig(filename string, data interface{}) {
+	b, err := ioutil.ReadFile(filename)
+	if err != nil {
+		log.Fatalf("error: %v", err)
+	}
+	err = yaml.Unmarshal(b, data)
+	if err != nil {
+		log.Fatalf("error: %v", err)
 	}
 }

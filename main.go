@@ -4,6 +4,8 @@
 package main
 
 import (
+	"gotank/libs/embd"
+	_ "gotank/libs/embd/host/all"
 	"log"
 	"net/http"
 )
@@ -13,6 +15,10 @@ const (
 )
 
 func main() {
+	embd.InitGPIO()
+	defer embd.CloseGPIO()
+
+	initModules()
 	startServer()
 }
 

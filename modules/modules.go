@@ -8,6 +8,7 @@ import (
 
 type module struct {
 	Name string
+	Attr interface{}
 }
 
 type event struct {
@@ -31,7 +32,7 @@ func (m module) register() {
 	modules[m.Name] = m
 }
 
-func InitModule(name string) {
+func InitModule(name string, config interface{}) {
 	if val, ok := modules[name]; ok {
 		fmt.Println(val)
 		return

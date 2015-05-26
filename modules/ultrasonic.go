@@ -1,9 +1,6 @@
 package modules
 
-import (
-	"fmt"
-	"gotank/modules/ultrasonic"
-)
+import "gotank/modules/ultrasonic"
 
 type ultrasonicModule struct {
 	Name string
@@ -16,8 +13,9 @@ func init() {
 }
 
 func (m ultrasonicModule) Start(c interface{}) {
-	fmt.Println(m.Name, c)
+	ultrasonic.Start(c)
 }
 
 func (m ultrasonicModule) Stop() {
+	ultrasonic.Stop()
 }

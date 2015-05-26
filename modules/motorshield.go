@@ -1,8 +1,23 @@
 package modules
 
-// import _ "gotank/modules/motorshield"
+import (
+	"fmt"
+	"gotank/modules/motorshield"
+)
+
+type motorshieldModule struct {
+	Name string
+}
 
 func init() {
-	m := module{Name: "motorshield"}
+	name := motorshield.Name
+	m := module{name, motorshieldModule{name}}
 	m.register()
+}
+
+func (m motorshieldModule) Start(c interface{}) {
+	fmt.Println(m.Name, c)
+}
+
+func (m motorshieldModule) Stop() {
 }

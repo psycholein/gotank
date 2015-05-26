@@ -1,15 +1,7 @@
 package modules
 
-import (
-	"fmt"
-	//_ "gotank/libs/embd"
-	//_ "gotank/libs/embd/host/all" // select the right board
-)
-
-type module struct {
-	Name string
-	Attr interface{}
-}
+//_ "gotank/libs/embd"
+//_ "gotank/libs/embd/host/all" // select the right board
 
 type event struct {
 	Name string
@@ -17,24 +9,31 @@ type event struct {
 }
 
 type moduleInterface interface {
-	Start()
+	Start(config interface{})
 	Stop()
-	Events() []string
-	Event(e event)
 }
 
-var modules map[string]module
+type module struct {
+	Name string
+	Attr moduleInterface
+}
+
+var availableModules map[string]module
 
 func (m module) register() {
-	if modules == nil {
-		modules = make(map[string]module)
+	if availableModules == nil {
+		availableModules = make(map[string]module)
 	}
-	modules[m.Name] = m
+	availableModules[m.Name] = m
+}
+
+type mainConfig struct {
+	Modules []string
 }
 
 func InitModule(name string, config interface{}) {
-	if val, ok := modules[name]; ok {
-		fmt.Println(val)
+	if val, ok := availableModules[name]; ok {
+		val.Attr.Start(config)
 		return
 	}
 }

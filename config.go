@@ -15,10 +15,13 @@ type mainConfig struct {
 
 func initModules() {
 	m := mainConfig{}
-	config{}.readConfig("./config/modules.yml", &m)
+	c := config{}
+	c.readConfig("./config/modules.yml", &m)
 
 	for _, value := range m.Modules {
-		modules.InitModule(value, config{})
+		i := make(map[interface{}]interface{})
+		c.readConfig("./config/"+value+".yml", &i)
+		modules.InitModule(value, i)
 	}
 }
 

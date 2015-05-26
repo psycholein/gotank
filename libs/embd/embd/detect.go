@@ -5,7 +5,7 @@ import (
 	"os"
 
 	"github.com/codegangsta/cli"
-	"github.com/kidoman/embd"
+	"gotank/libs/embd"
 )
 
 func detect(c *cli.Context) {

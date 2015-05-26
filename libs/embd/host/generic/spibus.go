@@ -8,7 +8,7 @@ import (
 	"unsafe"
 
 	"github.com/golang/glog"
-	"github.com/kidoman/embd"
+	"gotank/libs/embd"
 )
 
 const (

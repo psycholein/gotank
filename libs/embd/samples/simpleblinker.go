@@ -8,8 +8,8 @@ package main
 import (
 	"time"
 
-	"github.com/kidoman/embd"
-	_ "github.com/kidoman/embd/host/rpi" // This loads the RPi driver
+	"gotank/libs/embd"
+	_ "gotank/libs/embd/host/rpi" // This loads the RPi driver
 )
 
 func main() {

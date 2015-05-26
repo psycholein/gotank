@@ -6,7 +6,7 @@ import (
 	"testing"
 	"time"
 
-	"github.com/kidoman/embd"
+	"gotank/libs/embd"
 )
 
 const (

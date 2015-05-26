@@ -5,7 +5,7 @@ import (
 	"sync"
 	"time"
 
-	"github.com/kidoman/embd"
+	"gotank/libs/embd"
 )
 
 //accuracy = sensorValue/actualValue] (min = 0.96, typ = 1.2, max = 1.44

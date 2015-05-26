@@ -16,7 +16,7 @@ import (
 	"time"
 
 	"github.com/golang/glog"
-	"github.com/kidoman/embd"
+	"gotank/libs/embd"
 )
 
 type entryMode byte

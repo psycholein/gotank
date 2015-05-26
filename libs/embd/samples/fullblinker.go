@@ -11,8 +11,8 @@ import (
 	"os/signal"
 	"time"
 
-	"github.com/kidoman/embd"
-	_ "github.com/kidoman/embd/host/rpi"
+	"gotank/libs/embd"
+	_ "gotank/libs/embd/host/rpi"
 )
 
 func main() {

@@ -8,7 +8,7 @@ import (
 	"sync"
 	"syscall"
 
-	"github.com/kidoman/embd"
+	"gotank/libs/embd"
 )
 
 const (

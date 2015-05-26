@@ -7,10 +7,10 @@ import (
 	"fmt"
 	"time"
 
-	"github.com/kidoman/embd"
-	"github.com/kidoman/embd/sensor/bmp180"
+	"gotank/libs/embd"
+	"gotank/libs/embd/sensor/bmp180"
 
-	_ "github.com/kidoman/embd/host/all"
+	_ "gotank/libs/embd/host/all"
 )
 
 func main() {

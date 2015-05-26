@@ -5,7 +5,7 @@ import (
 	"sync"
 
 	"github.com/golang/glog"
-	"github.com/kidoman/embd"
+	"gotank/libs/embd"
 )
 
 // WaterSensor represents a water sensor.

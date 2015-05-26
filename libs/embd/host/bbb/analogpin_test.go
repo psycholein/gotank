@@ -3,7 +3,7 @@ package bbb
 import (
 	"testing"
 
-	"github.com/kidoman/embd"
+	"gotank/libs/embd"
 )
 
 func TestAnalogPinClose(t *testing.T) {

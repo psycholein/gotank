@@ -5,9 +5,9 @@ package main
 import (
 	"flag"
 
-	"github.com/kidoman/embd"
+	"gotank/libs/embd"
 
-	_ "github.com/kidoman/embd/host/all"
+	_ "gotank/libs/embd/host/all"
 )
 
 func main() {

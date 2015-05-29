@@ -1,14 +1,20 @@
 package ultrasonic
 
-const (
-	Name = "ultrasonic"
-)
+import "gotank/modules"
 
-type config struct{}
+const name = "ultrasonic"
 
-func Start(c interface{}) {
-
+type ultrasonicModule struct {
+	Name string
 }
 
-func Stop() {
+func Register() {
+	m := modules.Module{name, ultrasonicModule{name}}
+	m.Register()
+}
+
+func (m ultrasonicModule) Start(c interface{}) {
+}
+
+func (m ultrasonicModule) Stop() {
 }

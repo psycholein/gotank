@@ -18,6 +18,7 @@ func main() {
 	embd.InitGPIO()
 	defer embd.CloseGPIO()
 
+	registerModules()
 	initModules()
 	startServer()
 }

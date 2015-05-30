@@ -4,12 +4,10 @@ import "gotank/modules"
 
 const name = "ultrasonic"
 
-type ultrasonicModule struct {
-	Name string
-}
+type ultrasonicModule struct{}
 
 func Register() {
-	m := modules.Module{name, ultrasonicModule{name}}
+	m := modules.Module{name, ultrasonicModule{}}
 	m.Register()
 }
 

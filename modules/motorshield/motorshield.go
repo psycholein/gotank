@@ -7,12 +7,10 @@ import (
 
 const name = "motorshield"
 
-type motorshieldModule struct {
-	Name string
-}
+type motorshieldModule struct{}
 
 func Register() {
-	m := modules.Module{name, motorshieldModule{name}}
+	m := modules.Module{name, motorshieldModule{}}
 	m.Register()
 }
 

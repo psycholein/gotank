@@ -63,8 +63,7 @@ func distance() {
 }
 
 func measure(c chan int) {
-	for {
-		val := <-c
+	for val := range c {
 		if val == 1 {
 			startTime = time.Now()
 			continue

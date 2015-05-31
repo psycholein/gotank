@@ -96,23 +96,23 @@ func (m MotorShieldL293d) command(cmd int) {
 
 func (m MotorShieldL293d) latchTx() {
 	embd.DigitalWrite(m.latch, embd.Low)
-	time.Sleep(10 * time.Nanosecond)
+	time.Sleep(1 * time.Microsecond)
 	embd.DigitalWrite(m.data, embd.Low)
-	time.Sleep(10 * time.Nanosecond)
+	time.Sleep(1 * time.Microsecond)
 	var i byte
 	for i = 0; i < 8; i++ {
 		embd.DigitalWrite(m.clk, embd.Low)
-		time.Sleep(10 * time.Nanosecond)
+		time.Sleep(1 * time.Microsecond)
 		if latchState&m.bv(7-i) > 0 {
 			embd.DigitalWrite(m.data, embd.High)
 		} else {
 			embd.DigitalWrite(m.data, embd.Low)
 		}
-		time.Sleep(10 * time.Nanosecond)
+		time.Sleep(1 * time.Microsecond)
 		embd.DigitalWrite(m.clk, embd.High)
-		time.Sleep(10 * time.Nanosecond)
+		time.Sleep(1 * time.Microsecond)
 	}
-	time.Sleep(10 * time.Nanosecond)
+	time.Sleep(1 * time.Microsecond)
 	embd.DigitalWrite(m.latch, embd.High)
 }
 

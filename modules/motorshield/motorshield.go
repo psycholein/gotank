@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"gotank/components/l293d"
 	"gotank/modules"
+
 	"time"
 )
 
@@ -11,14 +12,25 @@ const name = "motorshield"
 
 type motorshieldModule struct{}
 
-var running = false
-
-func Register() {
-	m := modules.Module{name, motorshieldModule{}}
-	m.Register()
+type side struct {
+	Motor, Pwm int
+}
+type conf struct {
+	Latch, Clk, Enable, Data int
+	Left, Right              side
 }
 
-func (m motorshieldModule) Start(c interface{}) {
+var running = false
+var data map[string]conf
+
+func Register() {
+	data = make(map[string]conf)
+	m := modules.Module{name, motorshieldModule{}}
+	m.Register(&data)
+}
+
+func (m motorshieldModule) Start() {
+	fmt.Println(data)
 	go startMotor()
 }
 

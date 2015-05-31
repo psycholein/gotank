@@ -1,10 +1,15 @@
 package main
 
 import (
+	"gotank/config"
 	"gotank/modules"
 	"gotank/modules/motorshield"
 	"gotank/modules/ultrasonic"
 )
+
+type mainConfig struct {
+	Modules []string
+}
 
 func registerModules() {
 	motorshield.Register()
@@ -13,10 +18,8 @@ func registerModules() {
 
 func initModules() {
 	m := mainConfig{}
-	readConfig("./config/modules.yml", &m)
+	config.Read("./config/modules.yml", &m)
 	for _, value := range m.Modules {
-		i := make(map[interface{}]interface{})
-		readConfig("./config/"+value+".yml", &i)
-		modules.InitModule(value, i)
+		modules.InitModule(value)
 	}
 }

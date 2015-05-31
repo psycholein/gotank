@@ -12,18 +12,28 @@ import (
 const name = "ultrasonic"
 
 type ultrasonicModule struct{}
+type position struct {
+	Distance, Degree int
+}
+type conf struct {
+	Trigger, Echo int
+	Position      position
+}
 
 var (
 	running   = false
 	startTime = time.Now()
+	data      map[string]conf
 )
 
 func Register() {
+	data = make(map[string]conf)
 	m := modules.Module{name, ultrasonicModule{}}
-	m.Register()
+	m.Register(data)
 }
 
-func (m ultrasonicModule) Start(c interface{}) {
+func (m ultrasonicModule) Start() {
+	fmt.Println(data)
 	running = true
 	go distance()
 }

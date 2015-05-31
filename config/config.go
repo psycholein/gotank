@@ -1,4 +1,4 @@
-package main
+package config
 
 import (
 	"gotank/libs/yaml"
@@ -6,11 +6,7 @@ import (
 	"log"
 )
 
-type mainConfig struct {
-	Modules []string
-}
-
-func readConfig(filename string, data interface{}) {
+func Read(filename string, data interface{}) {
 	b, err := ioutil.ReadFile(filename)
 	if err != nil {
 		log.Fatalf("error: %v", err)

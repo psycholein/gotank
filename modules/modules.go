@@ -1,10 +1,9 @@
 package modules
 
-//_ "gotank/libs/embd"
-//_ "gotank/libs/embd/host/all" // select the right board
+import "gotank/config"
 
 type moduleInterface interface {
-	Start(config interface{})
+	Start()
 	Stop()
 }
 
@@ -15,16 +14,17 @@ type Module struct {
 
 var availableModules map[string]Module
 
-func (m Module) Register() {
+func (m Module) Register(c interface{}) {
+	config.Read("./config/"+m.Name+".yml", c)
 	if availableModules == nil {
 		availableModules = make(map[string]Module)
 	}
 	availableModules[m.Name] = m
 }
 
-func InitModule(name string, config interface{}) {
+func InitModule(name string) {
 	if val, ok := availableModules[name]; ok {
-		val.Attr.Start(config)
+		val.Attr.Start()
 		return
 	}
 }

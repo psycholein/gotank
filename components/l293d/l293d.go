@@ -112,9 +112,11 @@ func (m MotorShieldL293d) bv(i byte) byte {
 }
 
 func (m MotorShieldL293d) Forward() {
+	m.command(forward)
 }
 
 func (m MotorShieldL293d) Backward() {
+	m.command(backward)
 }
 
 func (m MotorShieldL293d) Speed(i int) {
@@ -122,4 +124,5 @@ func (m MotorShieldL293d) Speed(i int) {
 }
 
 func (m MotorShieldL293d) Stop() {
+	m.command(release)
 }

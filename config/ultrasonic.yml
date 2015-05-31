@@ -1,3 +1,6 @@
-sensor1:
-  trigger: 18
-  echo: 19
+ahead:
+  trigger: 4
+  echo: 17
+  position:
+    distance: 8
+    degree: 0

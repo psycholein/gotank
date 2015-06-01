@@ -1,3 +1,3 @@
 # gotank
 
-Build: GOOS=linux GOARCH=arm go build
+Build: GOOS=linux GOARCH=arm GOARM=6 go build

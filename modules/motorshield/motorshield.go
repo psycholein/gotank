@@ -40,16 +40,25 @@ func (m motorshieldModule) Stop() {
 
 func startMotor() {
 	running = true
-	motor := l293d.InitMotor(9, 25, 22, 23, 18, 3)
+	left := l293d.InitMotor(9, 25, 22, 23, 18, 3)
+	right := l293d.InitMotor(9, 25, 22, 23, 18, 4)
 	// latch int, clk int, enable int, data int, pwm int, motor int
 	for running {
-		motor.Forward()
-		fmt.Println("Forward")
-		time.Sleep(2 * time.Second)
-		motor.Backward()
-		fmt.Println("Backward")
-		time.Sleep(2 * time.Second)
-		motor.Stop()
+		left.Forward()
+		fmt.Println("Forward left")
+		time.Sleep(1 * time.Second)
+		left.Backward()
+		fmt.Println("Backward left")
+		time.Sleep(1 * time.Second)
+		left.Stop()
+
+		right.Forward()
+		fmt.Println("Forward right")
+		time.Sleep(1 * time.Second)
+		right.Backward()
+		fmt.Println("Backward right")
+		time.Sleep(1 * time.Second)
+		right.Stop()
 		fmt.Println("Stop")
 		time.Sleep(2 * time.Second)
 	}

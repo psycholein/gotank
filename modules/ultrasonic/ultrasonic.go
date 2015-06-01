@@ -30,6 +30,7 @@ var (
 	startTime = time.Now()
 	data      map[string]conf
 	status    chan int
+	sensor    string
 )
 
 func Register() {
@@ -49,34 +50,43 @@ func (m ultrasonicModule) Stop() {
 }
 
 func distance() {
-	echo, _ := embd.NewDigitalPin(17)
-	echo.SetDirection(embd.In)
-	trigger, _ := embd.NewDigitalPin(4)
-	trigger.SetDirection(embd.Out)
+	triggers := make(map[string]embd.DigitalPin)
+	echos := make(map[string]embd.DigitalPin)
+	for key, value := range data {
+		echos[key], _ = embd.NewDigitalPin(value.Echo)
+		echos[key].SetDirection(embd.In)
+		triggers[key], _ = embd.NewDigitalPin(value.Trigger)
+		triggers[key].SetDirection(embd.Out)
 
-	status = make(chan int, 1)
-	err := echo.Watch(embd.EdgeBoth, func(echo embd.DigitalPin) {
-		read, _ := echo.Read()
-		status <- read
-	})
-	if err != nil {
-		panic(err)
+		status = make(chan int, 1)
+		err := echos[key].Watch(embd.EdgeBoth, func(echo embd.DigitalPin) {
+			read, _ := echo.Read()
+			status <- read
+		})
+		if err != nil {
+			panic(err)
+		}
 	}
 	go measure(status)
 
 	for running {
-		trigger.Write(embd.High)
-		time.Sleep(50 * time.Microsecond)
-		trigger.Write(embd.Low)
+		for key := range data {
+			sensor = key
+			triggers[key].Write(embd.High)
+			time.Sleep(50 * time.Microsecond)
+			triggers[key].Write(embd.Low)
 
-		time.Sleep(50 * time.Millisecond)
-		status <- timeout
-		time.Sleep(1 * time.Millisecond)
+			time.Sleep(50 * time.Millisecond)
+			status <- timeout
+			time.Sleep(1 * time.Millisecond)
+		}
 	}
 
-	echo.StopWatching()
-	echo.Close()
-	trigger.Close()
+	for key := range data {
+		echos[key].StopWatching()
+		echos[key].Close()
+		triggers[key].Close()
+	}
 	close(status)
 }
 
@@ -93,11 +103,11 @@ func measure(status chan int) {
 			continue
 		}
 		if !run {
-			fmt.Println("Distance timeout")
+			fmt.Println(sensor, "Distance timeout")
 			continue
 		}
 		duration := time.Since(startTime)
 		distance := float64(duration.Nanoseconds()) / 10000000 * 171.5
-		fmt.Println(distance)
+		fmt.Println(sensor, distance)
 	}
 }

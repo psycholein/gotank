@@ -3,6 +3,7 @@ package motorshield
 import (
 	"fmt"
 	"gotank/components/l293d"
+	"gotank/event"
 	"gotank/modules"
 
 	"time"
@@ -44,6 +45,10 @@ func (m motorshieldModule) Start() {
 
 func (m motorshieldModule) Stop() {
 	running = false
+}
+
+func (m motorshieldModule) GetEvent(e event.Event) {
+	fmt.Println(e)
 }
 
 func startMotor() {

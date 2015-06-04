@@ -51,6 +51,10 @@ func (m ultrasonicModule) Stop() {
 	running = false
 }
 
+func (m ultrasonicModule) GetEvent(e event.Event) {
+	fmt.Println(e)
+}
+
 func distance() {
 	triggers := make(map[string]embd.DigitalPin)
 	echos := make(map[string]embd.DigitalPin)

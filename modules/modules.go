@@ -1,10 +1,14 @@
 package modules
 
-import "gotank/config"
+import (
+	"gotank/config"
+	"gotank/event"
+)
 
 type moduleInterface interface {
 	Start()
 	Stop()
+	GetEvent(e event.Event)
 }
 
 type Module struct {

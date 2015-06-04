@@ -5,6 +5,7 @@ package main
 
 import (
 	"fmt"
+	"gotank/event"
 	"gotank/libs/embd"
 	_ "gotank/libs/embd/host/all"
 	"log"
@@ -18,11 +19,13 @@ const (
 func main() {
 	fmt.Println("Start...")
 	embd.InitGPIO()
-	defer embd.CloseGPIO()
 
+	event.InitEvents()
 	registerModules()
 	initModules()
 	startServer()
+
+	embd.CloseGPIO()
 }
 
 func startServer() {

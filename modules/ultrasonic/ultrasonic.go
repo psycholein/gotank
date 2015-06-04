@@ -2,7 +2,9 @@ package ultrasonic
 
 import (
 	"fmt"
+	"gotank/event"
 	"gotank/modules"
+	"strconv"
 	"time"
 
 	"gotank/libs/embd"
@@ -70,11 +72,10 @@ func distance() {
 	go measure(status)
 
 	for running {
-		for key := range data {
-			sensor = key
-			triggers[key].Write(embd.High)
+		for sensor = range data {
+			triggers[sensor].Write(embd.High)
 			time.Sleep(50 * time.Microsecond)
-			triggers[key].Write(embd.Low)
+			triggers[sensor].Write(embd.Low)
 
 			time.Sleep(50 * time.Millisecond)
 			status <- timeout
@@ -109,5 +110,6 @@ func measure(status chan int) {
 		duration := time.Since(startTime)
 		distance := float64(duration.Nanoseconds()) / 10000000 * 171.5
 		fmt.Println(sensor, distance)
+		event.SendEvent(event.Event{name, sensor, "distance", strconv.FormatFloat(distance, 'f', 6, 64)})
 	}
 }

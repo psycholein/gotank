@@ -23,3 +23,7 @@ func initModules() {
 		modules.InitModule(value)
 	}
 }
+
+func stopModules() {
+	modules.StopModules()
+}

@@ -3,10 +3,10 @@ package event
 import "fmt"
 
 type Event struct {
-	Module  string
-	Name    string
-	Task    string
-	Command string
+	Module string
+	Name   string
+	Task   string
+	Value  string
 }
 
 var event chan Event
@@ -28,4 +28,8 @@ func handleEvents() {
 	for e := range event {
 		fmt.Println(e)
 	}
+}
+
+func Stop() {
+	close(event)
 }

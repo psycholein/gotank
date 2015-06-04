@@ -10,6 +10,8 @@ import (
 	_ "gotank/libs/embd/host/all"
 	"log"
 	"net/http"
+	"os"
+	"os/signal"
 )
 
 const (
@@ -20,12 +22,24 @@ func main() {
 	fmt.Println("Start...")
 	embd.InitGPIO()
 
+	c := make(chan os.Signal, 1)
+	signal.Notify(c, os.Interrupt)
+	go func() {
+		<-c
+		end()
+		os.Exit(0)
+	}()
+
 	event.InitEvents()
 	registerModules()
 	initModules()
 	startServer()
+}
 
+func end() {
 	embd.CloseGPIO()
+	stopModules()
+	event.Stop()
 }
 
 func startServer() {

@@ -32,3 +32,9 @@ func InitModule(name string) {
 		return
 	}
 }
+
+func StopModules() {
+	for _, m := range availableModules {
+		m.Attr.Stop()
+	}
+}

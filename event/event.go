@@ -20,6 +20,10 @@ func SendEvent(e Event) {
 	event <- e
 }
 
+func RegisterEvent() {
+
+}
+
 func handleEvents() {
 	for e := range event {
 		fmt.Println(e)

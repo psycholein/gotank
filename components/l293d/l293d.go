@@ -6,6 +6,14 @@ import (
 	"time"
 )
 
+type MotorShieldL293dInterface interface {
+	Forward()
+	Backward()
+	Speed(i int)
+	Stop()
+	Release()
+}
+
 type MotorShieldL293d struct {
 	latch, clk, enable, data, pwm, motor int
 	pin                                  embd.PWMPin
@@ -28,10 +36,10 @@ const (
 
 var latchState byte = 0
 
-func InitMotor(latch int, clk int, enable int, data int, pwm int, motor int) *MotorShieldL293d {
+func InitMotor(latch int, clk int, enable int, data int, pwm int, motor int) MotorShieldL293d {
 	m := MotorShieldL293d{latch, clk, enable, data, pwm, motor, nil}
 	m.init()
-	return &m
+	return m
 }
 
 func (m MotorShieldL293d) init() {

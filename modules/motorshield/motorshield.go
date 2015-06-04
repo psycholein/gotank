@@ -32,14 +32,6 @@ func Register() {
 }
 
 func (m motorshieldModule) Start() {
-	fmt.Println(data)
-	left := make(map[string]l293d.MotorShieldL293d)
-	right := make(map[string]l293d.MotorShieldL293d)
-	for key, value := range data {
-		// latch int, clk int, enable int, data int, pwm int, motor int
-		left[key] = *l293d.InitMotor(value.Latch, value.Clk, value.Enable, value.Data, value.Left.Pwm, value.Left.Motor)
-		right[key] = *l293d.InitMotor(value.Latch, value.Clk, value.Enable, value.Data, value.Right.Pwm, value.Right.Motor)
-	}
 	go startMotor()
 }
 
@@ -53,6 +45,15 @@ func (m motorshieldModule) GetEvent(e event.Event) {
 
 func startMotor() {
 	running = true
+
+	left := make(map[string]l293d.MotorShieldL293d)
+	right := make(map[string]l293d.MotorShieldL293d)
+	for key, value := range data {
+		// latch int, clk int, enable int, data int, pwm int, motor int
+		left[key] = l293d.InitMotor(value.Latch, value.Clk, value.Enable, value.Data, value.Left.Pwm, value.Left.Motor)
+		right[key] = l293d.InitMotor(value.Latch, value.Clk, value.Enable, value.Data, value.Right.Pwm, value.Right.Motor)
+	}
+
 	for running {
 		for key := range data {
 			left[key].Forward()

@@ -42,7 +42,6 @@ func Register() {
 }
 
 func (m ultrasonicModule) Start() {
-	fmt.Println(data)
 	running = true
 	go distance()
 }
@@ -108,12 +107,10 @@ func measure(status chan int) {
 			continue
 		}
 		if !run {
-			fmt.Println(sensor, "Distance timeout")
 			continue
 		}
 		duration := time.Since(startTime)
 		distance := float64(duration.Nanoseconds()) / 10000000 * 171.5
-		fmt.Println(sensor, distance)
-		event.SendEvent(event.Event{name, sensor, "distance", strconv.FormatFloat(distance, 'f', 6, 64)})
+		event.SendEvent(event.Event{name, sensor, "distance", strconv.FormatFloat(distance, 'f', 2, 64)})
 	}
 }

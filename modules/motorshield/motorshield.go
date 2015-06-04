@@ -22,6 +22,7 @@ type conf struct {
 
 var running = false
 var data map[string]conf
+var left, right map[string]l293d.MotorShieldL293d
 
 func Register() {
 	data = make(map[string]conf)
@@ -31,6 +32,13 @@ func Register() {
 
 func (m motorshieldModule) Start() {
 	fmt.Println(data)
+	left := make(map[string]l293d.MotorShieldL293d)
+	right := make(map[string]l293d.MotorShieldL293d)
+	for key, value := range data {
+		// latch int, clk int, enable int, data int, pwm int, motor int
+		left[key] = *l293d.InitMotor(value.Latch, value.Clk, value.Enable, value.Data, value.Left.Pwm, value.Left.Motor)
+		right[key] = *l293d.InitMotor(value.Latch, value.Clk, value.Enable, value.Data, value.Right.Pwm, value.Right.Motor)
+	}
 	go startMotor()
 }
 
@@ -40,26 +48,25 @@ func (m motorshieldModule) Stop() {
 
 func startMotor() {
 	running = true
-	left := l293d.InitMotor(9, 25, 22, 23, 18, 3)
-	right := l293d.InitMotor(9, 25, 22, 23, 18, 4)
-	// latch int, clk int, enable int, data int, pwm int, motor int
 	for running {
-		left.Forward()
-		fmt.Println("Forward left")
-		time.Sleep(1 * time.Second)
-		left.Backward()
-		fmt.Println("Backward left")
-		time.Sleep(1 * time.Second)
-		left.Stop()
+		for key := range data {
+			left[key].Forward()
+			fmt.Println("Forward left")
+			time.Sleep(1 * time.Second)
+			left[key].Backward()
+			fmt.Println("Backward left")
+			time.Sleep(1 * time.Second)
+			left[key].Stop()
 
-		right.Forward()
-		fmt.Println("Forward right")
-		time.Sleep(1 * time.Second)
-		right.Backward()
-		fmt.Println("Backward right")
-		time.Sleep(1 * time.Second)
-		right.Stop()
-		fmt.Println("Stop")
-		time.Sleep(2 * time.Second)
+			right[key].Forward()
+			fmt.Println("Forward right")
+			time.Sleep(1 * time.Second)
+			right[key].Backward()
+			fmt.Println("Backward right")
+			time.Sleep(1 * time.Second)
+			right[key].Stop()
+			fmt.Println("Stop")
+			time.Sleep(2 * time.Second)
+		}
 	}
 }

@@ -1,5 +1,3 @@
-//go:generate sh -c "rm -f public/assets/*"
-//go:generate coffee -o public/assets/ -c assets/
 //go:generate esc -o assets.go -prefix=public/ public/
 package main
 
@@ -15,13 +13,22 @@ import (
 )
 
 const (
-	addr = ":3000"
+	addr  = ":3000"
+	debug = false
 )
 
 func main() {
 	fmt.Println("Start...")
 	embd.InitGPIO()
 
+	handleCtrlC()
+	event.InitEvents()
+	registerModules()
+	initModules()
+	startServer()
+}
+
+func handleCtrlC() {
 	c := make(chan os.Signal, 1)
 	signal.Notify(c, os.Interrupt)
 	go func() {
@@ -29,11 +36,6 @@ func main() {
 		end()
 		os.Exit(0)
 	}()
-
-	event.InitEvents()
-	registerModules()
-	initModules()
-	startServer()
 }
 
 func end() {
@@ -50,10 +52,10 @@ func startServer() {
 }
 
 func routes() {
-	//http.Handle("/", http.FileServer(assetFS()))
+	http.Handle("/", http.FileServer(assetFS()))
 	http.HandleFunc("/ws", wsHandler)
 }
 
-// func assetFS() http.FileSystem {
-// 	return FS(*Debug)
-// }
+func assetFS() http.FileSystem {
+	return FS(debug)
+}

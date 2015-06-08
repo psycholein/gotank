@@ -1,3 +1,4 @@
+//go:generate coffee -o public/ -c assets/
 //go:generate esc -o assets.go -prefix=public/ public/
 package main
 

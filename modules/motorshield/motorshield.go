@@ -43,8 +43,18 @@ func (m motorshieldModule) GetEvent(e event.Event) {
 	fmt.Println(e)
 }
 
+func (m motorshieldModule) Active() []string {
+	var active []string
+	for key := range data {
+		active = append(active, key)
+	}
+	return active
+}
+
 func startMotor() {
 	running = true
+
+	event.RegisterEvent(name, "ultrasonic") // Test
 
 	left := make(map[string]l293d.MotorShieldL293d)
 	right := make(map[string]l293d.MotorShieldL293d)

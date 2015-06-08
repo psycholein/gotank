@@ -54,6 +54,14 @@ func (m ultrasonicModule) GetEvent(e event.Event) {
 	fmt.Println(e)
 }
 
+func (m ultrasonicModule) Active() []string {
+	var active []string
+	for key := range data {
+		active = append(active, key)
+	}
+	return active
+}
+
 func distance() {
 	triggers := make(map[string]embd.DigitalPin)
 	echos := make(map[string]embd.DigitalPin)

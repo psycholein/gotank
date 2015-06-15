@@ -1,6 +1,7 @@
 # gotank
 
-##Build:
+##Build
+go generate
 GOOS=linux GOARCH=arm GOARM=6 go build
 
 ##Tools

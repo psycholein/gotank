@@ -1,7 +1,8 @@
 # gotank
 
-Build: GOOS=linux GOARCH=arm GOARM=6 go build
+##Build:
+GOOS=linux GOARCH=arm GOARM=6 go build
 
-Tools
-nodejs: npm install (coffee)
-ruby: gem install haml sass
+##Tools
+* __nodejs__: npm install (coffee)
+* __ruby__: bundle install or gem install haml sass

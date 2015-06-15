@@ -1,3 +1,5 @@
 gotank
 build.sh
 .sass-cache
+node_modules/
+*.log

@@ -1,4 +1,7 @@
 //go:generate coffee -o public/ -c assets/
+//go:generate sass --update assets:public
+//go:generate haml assets/index.haml public/index.html
+//go:generate sh -c "cd assets && find . -name '*.ect' -exec cp --parents \\{\\} ../public \\;"
 //go:generate esc -o assets.go -prefix=public/ public/
 package main
 

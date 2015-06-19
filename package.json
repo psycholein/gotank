@@ -1,1 +1,1 @@
-{"name": "gotank", "version": "1.0.0", "dependencies": { "coffee-script": "1.4.0" } }
+{"name": "gotank", "version": "1.0.1", "dependencies": { "coffee-script": "1.9.1" } }

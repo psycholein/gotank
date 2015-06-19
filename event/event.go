@@ -11,11 +11,13 @@ type Event struct {
 	Value  string
 }
 
+type EventFunc func(Event)
+
 var event chan Event
-var register map[string]string
+var register map[string]EventFunc
 
 func InitEvents() {
-	register = make(map[string]string)
+	register = make(map[string]EventFunc)
 	event = make(chan Event)
 	go handleEvents()
 }
@@ -24,14 +26,14 @@ func SendEvent(e Event) {
 	event <- e
 }
 
-func RegisterEvent(srcModule string, destModule string) {
+func RegisterEvent(srcModule string, destModule EventFunc) {
 	register[srcModule] = destModule
 }
 
 func handleEvents() {
 	for e := range event {
 		if d, ok := register[e.Module]; ok {
-			fmt.Print("TODO", d)
+			d(e)
 		}
 		fmt.Println(e)
 	}

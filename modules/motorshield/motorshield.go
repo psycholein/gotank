@@ -33,6 +33,8 @@ func Register() {
 
 func (m motorshieldModule) Start() {
 	go startMotor()
+
+	event.RegisterEvent("ultrasonic", m.GetEvent) // Test
 }
 
 func (m motorshieldModule) Stop() {
@@ -53,8 +55,6 @@ func (m motorshieldModule) Active() []string {
 
 func startMotor() {
 	running = true
-
-	event.RegisterEvent(name, "ultrasonic") // Test
 
 	left := make(map[string]l293d.MotorShieldL293d)
 	right := make(map[string]l293d.MotorShieldL293d)

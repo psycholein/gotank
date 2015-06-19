@@ -38,7 +38,7 @@ var (
 func Register() {
 	data = make(map[string]conf)
 	m := modules.Module{name, ultrasonicModule{}}
-	m.Register(data)
+	m.Register(&data)
 }
 
 func (m ultrasonicModule) Start() {

@@ -124,5 +124,6 @@ func handleReceive(m *message) {
 	if err := json.Unmarshal(m.message, &e); err != nil {
 		return
 	}
-	event.SendEvent(e)
+	e.Local = false
+	event.SendWebEvent(e)
 }

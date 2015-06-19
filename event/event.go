@@ -11,19 +11,28 @@ type Event struct {
 	Value  string
 }
 
+type eventType struct {
+	event Event
+	web   bool
+}
+
 type EventFunc func(Event)
 
-var event chan Event
+var event chan eventType
 var register map[string][]EventFunc
 
 func InitEvents() {
 	register = make(map[string][]EventFunc)
-	event = make(chan Event)
+	event = make(chan eventType)
 	go handleEvents()
 }
 
 func SendEvent(e Event) {
-	event <- e
+	event <- eventType{e, false}
+}
+
+func SendWebEvent(e Event) {
+	event <- eventType{e, true}
 }
 
 func RegisterEvent(srcModule string, destModule EventFunc) {
@@ -32,14 +41,16 @@ func RegisterEvent(srcModule string, destModule EventFunc) {
 
 func handleEvents() {
 	for e := range event {
-		if items, ok := register[e.Module]; ok {
+		if items, ok := register[e.event.Module]; ok {
 			for _, item := range items {
-				item(e)
+				item(e.event)
 			}
 		}
-		if items, ok := register["_all"]; ok {
-			for _, item := range items {
-				item(e)
+		if !e.web {
+			if items, ok := register["_all"]; ok {
+				for _, item := range items {
+					item(e.event)
+				}
 			}
 		}
 		fmt.Println("handleEvents", e)

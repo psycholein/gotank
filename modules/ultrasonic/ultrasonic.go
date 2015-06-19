@@ -3,12 +3,11 @@ package ultrasonic
 import (
 	"fmt"
 	"gotank/event"
+	"gotank/libs/embd"
+	_ "gotank/libs/embd/host/all"
 	"gotank/modules"
 	"strconv"
 	"time"
-
-	"gotank/libs/embd"
-	_ "gotank/libs/embd/host/all"
 )
 
 const name = "ultrasonic"
@@ -37,7 +36,7 @@ var (
 
 func Register() {
 	data = make(map[string]conf)
-	m := modules.Module{name, ultrasonicModule{}}
+	m := modules.Module{name, ultrasonicModule{}, true}
 	m.Register(&data)
 }
 
@@ -79,6 +78,7 @@ func distance() {
 		if err != nil {
 			panic(err)
 		}
+		event.SendEvent(event.Event{name, key, "web", "start"})
 	}
 	go measure(status)
 
@@ -98,6 +98,7 @@ func distance() {
 		echos[key].StopWatching()
 		echos[key].Close()
 		triggers[key].Close()
+		event.SendEvent(event.Event{name, key, "web", "stop"})
 	}
 	close(status)
 }

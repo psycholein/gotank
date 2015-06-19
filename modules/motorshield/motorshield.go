@@ -26,7 +26,7 @@ var left, right map[string]l293d.MotorShieldL293d
 
 func Register() {
 	data = make(map[string]conf)
-	m := modules.Module{name, motorshieldModule{}}
+	m := modules.Module{name, motorshieldModule{}, true}
 	m.Register(&data)
 }
 
@@ -38,6 +38,9 @@ func (m motorshieldModule) Start() {
 
 func (m motorshieldModule) Stop() {
 	running = false
+	for key := range data {
+		event.SendEvent(event.Event{name, key, "web", "stop"})
+	}
 }
 
 func (m motorshieldModule) GetEvent(e event.Event) {
@@ -61,27 +64,26 @@ func startMotor() {
 		// latch int, clk int, enable int, data int, pwm int, motor int
 		left[key] = l293d.InitMotor(value.Latch, value.Clk, value.Enable, value.Data, value.Left.Pwm, value.Left.Motor)
 		right[key] = l293d.InitMotor(value.Latch, value.Clk, value.Enable, value.Data, value.Right.Pwm, value.Right.Motor)
+		event.SendEvent(event.Event{name, key, "web", "start"})
 	}
 
-	for running {
-		for key := range data {
-			left[key].Forward()
-			fmt.Println("Forward left")
-			time.Sleep(1 * time.Second)
-			left[key].Backward()
-			fmt.Println("Backward left")
-			time.Sleep(1 * time.Second)
-			left[key].Stop()
+	for key := range data {
+		left[key].Forward()
+		fmt.Println("Forward left")
+		time.Sleep(1 * time.Second)
+		left[key].Backward()
+		fmt.Println("Backward left")
+		time.Sleep(1 * time.Second)
+		left[key].Stop()
 
-			right[key].Forward()
-			fmt.Println("Forward right")
-			time.Sleep(1 * time.Second)
-			right[key].Backward()
-			fmt.Println("Backward right")
-			time.Sleep(1 * time.Second)
-			right[key].Stop()
-			fmt.Println("Stop")
-			time.Sleep(2 * time.Second)
-		}
+		right[key].Forward()
+		fmt.Println("Forward right")
+		time.Sleep(1 * time.Second)
+		right[key].Backward()
+		fmt.Println("Backward right")
+		time.Sleep(1 * time.Second)
+		right[key].Stop()
+		fmt.Println("Stop")
+		time.Sleep(2 * time.Second)
 	}
 }

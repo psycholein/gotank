@@ -51,7 +51,7 @@ func (m ultrasonicModule) Stop() {
 }
 
 func (m ultrasonicModule) GetEvent(e event.Event) {
-	fmt.Println(e)
+	fmt.Println("ultrasonic", e)
 }
 
 func (m ultrasonicModule) Active() []string {

@@ -5,8 +5,8 @@ import (
 )
 
 type Event struct {
-	Name   string
 	Module string
+	Name   string
 	Task   string
 	Value  string
 }
@@ -14,10 +14,10 @@ type Event struct {
 type EventFunc func(Event)
 
 var event chan Event
-var register map[string]EventFunc
+var register map[string][]EventFunc
 
 func InitEvents() {
-	register = make(map[string]EventFunc)
+	register = make(map[string][]EventFunc)
 	event = make(chan Event)
 	go handleEvents()
 }
@@ -27,15 +27,22 @@ func SendEvent(e Event) {
 }
 
 func RegisterEvent(srcModule string, destModule EventFunc) {
-	register[srcModule] = destModule
+	register[srcModule] = append(register[srcModule], destModule)
 }
 
 func handleEvents() {
 	for e := range event {
-		if d, ok := register[e.Module]; ok {
-			d(e)
+		if items, ok := register[e.Module]; ok {
+			for _, item := range items {
+				item(e)
+			}
 		}
-		fmt.Println(e)
+		if items, ok := register["_all"]; ok {
+			for _, item := range items {
+				item(e)
+			}
+		}
+		fmt.Println("handleEvents", e)
 	}
 }
 

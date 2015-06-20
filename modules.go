@@ -2,6 +2,7 @@ package main
 
 import (
 	"gotank/config"
+	"gotank/event"
 	"gotank/modules"
 	"gotank/modules/motorshield"
 	"gotank/modules/ultrasonic"
@@ -26,4 +27,15 @@ func initModules() {
 
 func stopModules() {
 	modules.StopModules()
+}
+
+func sendModulesToWeb(c *connection) {
+	for _, module := range modules.AvailableModules {
+		if module.Web {
+			sendData(c, event.Event{module.Name, "module", "web", "load"})
+			for _, typ := range module.Attr.Active() {
+				sendData(c, event.Event{module.Name, typ, "web", "init"})
+			}
+		}
+	}
 }

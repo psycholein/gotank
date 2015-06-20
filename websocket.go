@@ -97,6 +97,7 @@ func (pool *connectionPool) run() {
 		select {
 		case c := <-pool.register:
 			pool.connections[c] = true
+			sendModulesToWeb(c)
 		case c := <-pool.unregister:
 			if _, ok := pool.connections[c]; ok {
 				delete(pool.connections, c)
@@ -108,7 +109,7 @@ func (pool *connectionPool) run() {
 	}
 }
 
-func sendData(e event.Event) {
+func sendAllData(e event.Event) {
 	data, err := json.Marshal(e)
 	if err != nil {
 		return
@@ -117,6 +118,14 @@ func sendData(e event.Event) {
 	for c := range pool.connections {
 		c.send <- data
 	}
+}
+
+func sendData(c *connection, e event.Event) {
+	data, err := json.Marshal(e)
+	if err != nil {
+		return
+	}
+	c.send <- data
 }
 
 func handleReceive(m *message) {

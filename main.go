@@ -49,7 +49,7 @@ func end() {
 }
 
 func startServer() {
-	event.RegisterEvent("_all", sendData)
+	event.RegisterEvent("_all", sendAllData)
 	routes()
 	if err := http.ListenAndServe(addr, nil); err != nil {
 		log.Fatal("ListenAndServe:", err)

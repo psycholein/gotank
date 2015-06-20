@@ -26,9 +26,6 @@ func (m Module) Register(c interface{}) {
 		AvailableModules = make(map[string]Module)
 	}
 	AvailableModules[m.Name] = m
-	if m.Web {
-		event.SendEvent(event.Event{m.Name, "module", "web", "register"})
-	}
 }
 
 func InitModule(name string) {

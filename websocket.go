@@ -43,6 +43,10 @@ var (
 	}
 )
 
+func startConnectionHandler() {
+	go pool.run()
+}
+
 func wsHandler(w http.ResponseWriter, r *http.Request) {
 	ws, err := upgrader.Upgrade(w, r, nil)
 	if err != nil {
@@ -97,6 +101,7 @@ func (pool *connectionPool) run() {
 		select {
 		case c := <-pool.register:
 			pool.connections[c] = true
+			fmt.Print("connected", c)
 			sendModulesToWeb(c)
 		case c := <-pool.unregister:
 			if _, ok := pool.connections[c]; ok {

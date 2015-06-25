@@ -10,6 +10,7 @@ type moduleInterface interface {
 	Stop()
 	GetEvent(e event.Event)
 	Active() []string
+	Config() interface{}
 }
 
 type Module struct {
@@ -20,8 +21,7 @@ type Module struct {
 
 var AvailableModules map[string]Module
 
-func (m Module) Register(c interface{}) {
-	config.Read("./config/"+m.Name+".yml", c)
+func (m Module) Register() {
 	if AvailableModules == nil {
 		AvailableModules = make(map[string]Module)
 	}
@@ -30,6 +30,7 @@ func (m Module) Register(c interface{}) {
 
 func InitModule(name string) {
 	if val, ok := AvailableModules[name]; ok {
+		config.Read("./config/"+val.Name+".yml", val.Attr.Config())
 		val.Attr.Start()
 		return
 	}

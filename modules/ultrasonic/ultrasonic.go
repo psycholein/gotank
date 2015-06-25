@@ -35,9 +35,13 @@ var (
 )
 
 func Register() {
-	data = make(map[string]conf)
 	m := modules.Module{name, ultrasonicModule{}, true}
-	m.Register(&data)
+	m.Register()
+}
+
+func (m ultrasonicModule) Config() interface{} {
+	data = make(map[string]conf)
+	return &data
 }
 
 func (m ultrasonicModule) Start() {
@@ -55,6 +59,10 @@ func (m ultrasonicModule) GetEvent(e event.Event) {
 
 func (m ultrasonicModule) Active() []string {
 	var active []string
+	if data == nil {
+		return active
+	}
+
 	for key := range data {
 		active = append(active, key)
 	}

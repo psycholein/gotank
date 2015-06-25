@@ -18,7 +18,7 @@ import (
 
 const (
 	addr  = ":3000"
-	debug = false
+	debug = true
 )
 
 func main() {
@@ -28,7 +28,9 @@ func main() {
 	handleCtrlC()
 	event.InitEvents()
 	registerModules()
-	initModules()
+	if !debug {
+		initModules()
+	}
 	startServer()
 }
 
@@ -51,6 +53,7 @@ func end() {
 func startServer() {
 	event.RegisterEvent("_all", sendAllData)
 	routes()
+	startConnectionHandler()
 	if err := http.ListenAndServe(addr, nil); err != nil {
 		log.Fatal("ListenAndServe:", err)
 	}

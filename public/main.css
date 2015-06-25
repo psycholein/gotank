@@ -1,0 +1,18 @@
+.main-headline {
+  font-size: 18px;
+  font-weight: bold;
+  text-align: center; }
+
+.content:after {
+  clear: both; }
+.content .left, .content .right {
+  min-height: 100px;
+  float: left;
+  width: 20%;
+  background: #eee; }
+.content .middle {
+  min-height: 100px;
+  float: left;
+  width: 60%; }
+
+/*# sourceMappingURL=main.css.map */

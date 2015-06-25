@@ -25,9 +25,13 @@ var data map[string]conf
 var left, right map[string]l293d.MotorShieldL293d
 
 func Register() {
-	data = make(map[string]conf)
 	m := modules.Module{name, motorshieldModule{}, true}
-	m.Register(&data)
+	m.Register()
+}
+
+func (m motorshieldModule) Config() interface{} {
+	data = make(map[string]conf)
+	return &data
 }
 
 func (m motorshieldModule) Start() {
@@ -49,6 +53,10 @@ func (m motorshieldModule) GetEvent(e event.Event) {
 
 func (m motorshieldModule) Active() []string {
 	var active []string
+	if data == nil {
+		return active
+	}
+
 	for key := range data {
 		active = append(active, key)
 	}

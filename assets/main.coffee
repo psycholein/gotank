@@ -1,6 +1,4 @@
-root = exports ? this
-
-root.App = class App
+window.App = class App
   constructor: ->
     url      = "ws://" + document.location.host + "/ws"
     @network   = new Network(url)
@@ -10,7 +8,7 @@ root.App = class App
     @network.connect(@event)
 
 
-root.Network = class Network
+window.Network = class Network
   constructor: (@url) ->
     @ws       = null
 
@@ -66,7 +64,7 @@ class Event
     @network.send(JSON.stringify data)
 
 
-root.Resources = class Resources
+window.Resources = class Resources
   constructor: (@event) ->
     @modules = {}
     @event.register('_all', @router)
@@ -83,21 +81,39 @@ root.Resources = class Resources
     return if event.Name in @modules
     @modules[event.Module] = {}
     file = "modules/#{event.Module}/#{event.Module}"
-    @loadResource event.Module, "#{file}.js", 'script'
-    @loadResource event.Module, "#{file}.ect", 'text'
+    @loadResource event.Module, "#{file}.js", 'script', 'js'
+    @loadResource event.Module, "#{file}.ect", 'text', 'ect'
     css = $("<link rel='stylesheet' href='#{file}.css' type='text/css' />")
     $("head").append(css)
 
   initModule: (event) =>
-    console.log("init", event)
-    new event.Module(event.Name) if event.Module
+    name = @ucFirst(event.Module)
+    return unless window[name]
+    mod = @modules[event.Module]
+    mod["modules"] = {} unless mod["modules"]
+    return if mod["modules"][event.Name]
+    mod["modules"][event.Name] = new window[name](@event, event.Name)
+    console.log("init", @modules)
 
-  loadResource: (module, file, type) =>
+  loadResource: (module, file, type, res) =>
     $.ajax
+      async: false,
       url: file,
-      dataType: type
+      dataType: type,
       success: (data) =>
-        @modules[module][type] = data
+        @modules[module][res] = data
+        return true
+
+  ucFirst: (str) ->
+    str.charAt(0).toUpperCase() + str.substring(1)
+
+window.BasicModule = class BasicModule
+  constructor: (@event, @name) ->
+    @initTemplate()
+    @event.register(@event.Module, @router)
+  router: (event) =>
+  initTemplate: =>
+
 
 $ ->
   new App

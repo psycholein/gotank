@@ -115,6 +115,7 @@
   window.Resources = Resources = (function() {
     function Resources(event1) {
       this.event = event1;
+      this.getRescources = bind(this.getRescources, this);
       this.loadResource = bind(this.loadResource, this);
       this.initModule = bind(this.initModule, this);
       this.loadModule = bind(this.loadModule, this);
@@ -161,7 +162,7 @@
       if (mod["modules"][event.Name]) {
         return;
       }
-      module = new window[name](this.event, event.Module, event.Name);
+      module = new window[name](this.event, this, event.Module, event.Name);
       return mod["modules"][event.Name] = module;
     };
 
@@ -179,6 +180,10 @@
       });
     };
 
+    Resources.prototype.getRescources = function(module) {
+      return this.modules[module];
+    };
+
     Resources.prototype.ucFirst = function(str) {
       return str.charAt(0).toUpperCase() + str.substring(1);
     };
@@ -188,19 +193,41 @@
   })();
 
   window.BasicModule = BasicModule = (function() {
-    function BasicModule(event1, module1, name1) {
+    function BasicModule(event1, resources, module1, name1) {
       this.event = event1;
+      this.resources = resources;
       this.module = module1;
       this.name = name1;
-      this.initTemplate = bind(this.initTemplate, this);
+      this.afterInit = bind(this.afterInit, this);
       this.router = bind(this.router, this);
+      this.config = bind(this.config, this);
+      this.initTemplate = bind(this.initTemplate, this);
+      this.renderer = ECT({
+        root: this.resources.getRescources(this.module)
+      });
+      this.config();
       this.initTemplate();
       this.event.register(this.module, this.router);
+      this.afterInit();
     }
+
+    BasicModule.prototype.initTemplate = function() {
+      var html;
+      html = this.renderer.render('ect', {
+        module: this.module,
+        name: this.name
+      });
+      $(".content ." + this.position).append(html);
+      return this.selector = ".content ." + this.position + " .module." + this.module + "[data-name=" + this.name + "]";
+    };
+
+    BasicModule.prototype.config = function() {
+      return this.position = "middle";
+    };
 
     BasicModule.prototype.router = function(event) {};
 
-    BasicModule.prototype.initTemplate = function() {};
+    BasicModule.prototype.afterInit = function() {};
 
     return BasicModule;
 

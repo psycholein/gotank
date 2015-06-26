@@ -9,12 +9,19 @@
     extend(Motorshield, superClass);
 
     function Motorshield() {
-      this.router = bind(this.router, this);
+      this.control = bind(this.control, this);
+      this.afterInit = bind(this.afterInit, this);
       return Motorshield.__super__.constructor.apply(this, arguments);
     }
 
-    Motorshield.prototype.router = function(event) {
-      return console.log("motorshield", event);
+    Motorshield.prototype.afterInit = function() {
+      return $(this.selector).find('.control').on('click', this.control);
+    };
+
+    Motorshield.prototype.control = function(e) {
+      var control;
+      control = $(e.currentTarget).data('event');
+      return this.event.send(this.module, this.name, 'control', control);
     };
 
     return Motorshield;

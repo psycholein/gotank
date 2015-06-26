@@ -10,11 +10,19 @@
 
     function Ultrasonic() {
       this.router = bind(this.router, this);
+      this.config = bind(this.config, this);
       return Ultrasonic.__super__.constructor.apply(this, arguments);
     }
 
+    Ultrasonic.prototype.config = function() {
+      return this.position = "left";
+    };
+
     Ultrasonic.prototype.router = function(event) {
-      return console.log("ultrasonic", event);
+      switch (event.Task) {
+        case "distance":
+          return $(this.selector).find('.distance').text(event.Value);
+      }
     };
 
     return Ultrasonic;

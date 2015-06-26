@@ -32,6 +32,7 @@ func InitModule(name string) {
 	if val, ok := AvailableModules[name]; ok {
 		config.Read("./config/"+val.Name+".yml", val.Attr.Config())
 		val.Attr.Start()
+		event.RegisterEvent(val.Name, val.Attr.GetEvent)
 		return
 	}
 }

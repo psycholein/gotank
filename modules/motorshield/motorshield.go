@@ -1,11 +1,9 @@
 package motorshield
 
 import (
-	"fmt"
 	"gotank/components/l293d"
 	"gotank/event"
 	"gotank/modules"
-	"time"
 )
 
 const name = "motorshield"
@@ -48,6 +46,34 @@ func (m motorshieldModule) Stop() {
 }
 
 func (m motorshieldModule) GetEvent(e event.Event) {
+	if e.Module != name {
+		return
+	}
+	if e.Task == "control" {
+		control(e)
+	}
+}
+
+func control(e event.Event) {
+	if _, l := left[e.Name]; !l {
+		return
+	}
+	if _, r := right[e.Name]; !r {
+		return
+	}
+
+	switch e.Value {
+	case "forward":
+		forward(e.Name)
+	case "backward":
+		backward(e.Name)
+	case "turnleft":
+		turnleft(e.Name)
+	case "turnright":
+		turnright(e.Name)
+	case "stop":
+		stop(e.Name)
+	}
 }
 
 func (m motorshieldModule) Active() []string {
@@ -65,32 +91,37 @@ func (m motorshieldModule) Active() []string {
 func startMotor() {
 	running = true
 
-	left := make(map[string]l293d.MotorShieldL293d)
-	right := make(map[string]l293d.MotorShieldL293d)
+	left = make(map[string]l293d.MotorShieldL293d)
+	right = make(map[string]l293d.MotorShieldL293d)
 	for key, value := range data {
 		// latch int, clk int, enable int, data int, pwm int, motor int
 		left[key] = l293d.InitMotor(value.Latch, value.Clk, value.Enable, value.Data, value.Left.Pwm, value.Left.Motor)
 		right[key] = l293d.InitMotor(value.Latch, value.Clk, value.Enable, value.Data, value.Right.Pwm, value.Right.Motor)
 		event.SendEvent(event.Event{name, key, "web", "start"})
 	}
+}
 
-	for key := range data {
-		left[key].Forward()
-		fmt.Println("Forward left")
-		time.Sleep(1 * time.Second)
-		left[key].Backward()
-		fmt.Println("Backward left")
-		time.Sleep(1 * time.Second)
-		left[key].Stop()
+func forward(key string) {
+	left[key].Forward()
+	right[key].Forward()
+}
 
-		right[key].Forward()
-		fmt.Println("Forward right")
-		time.Sleep(1 * time.Second)
-		right[key].Backward()
-		fmt.Println("Backward right")
-		time.Sleep(1 * time.Second)
-		right[key].Stop()
-		fmt.Println("Stop")
-		time.Sleep(2 * time.Second)
-	}
+func backward(key string) {
+	left[key].Backward()
+	right[key].Backward()
+}
+
+func turnleft(key string) {
+	left[key].Backward()
+	right[key].Forward()
+}
+
+func turnright(key string) {
+	left[key].Forward()
+	right[key].Backward()
+}
+
+func stop(key string) {
+	left[key].Stop()
+	right[key].Stop()
 }

@@ -101,7 +101,7 @@ func (pool *connectionPool) run() {
 		select {
 		case c := <-pool.register:
 			pool.connections[c] = true
-			fmt.Print("connected", c)
+			fmt.Println("connected", c)
 			sendModulesToWeb(c)
 		case c := <-pool.unregister:
 			if _, ok := pool.connections[c]; ok {

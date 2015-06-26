@@ -94,7 +94,7 @@ window.Resources = class Resources
     mod["modules"] = {} unless mod["modules"]
     return if mod["modules"][event.Name]
 
-    module = new window[name](@event, event.Module, event.Name)
+    module = new window[name](@event, @, event.Module, event.Name)
     mod["modules"][event.Name] = module
 
   loadResource: (module, file, type, res) =>
@@ -106,15 +106,30 @@ window.Resources = class Resources
         @modules[module][res] = data
         return true
 
+  getRescources: (module) =>
+    @modules[module]
+
   ucFirst: (str) ->
     str.charAt(0).toUpperCase() + str.substring(1)
 
 window.BasicModule = class BasicModule
-  constructor: (@event, @module, @name) ->
+  constructor: (@event, @resources, @module, @name) ->
+    @renderer = ECT({root: @resources.getRescources(@module)})
+    @config()
     @initTemplate()
     @event.register(@module, @router)
-  router: (event) =>
+    @afterInit()
+
   initTemplate: =>
+    html = @renderer.render('ect', {module: @module, name: @name})
+    $(".content .#{@position}").append(html)
+    @selector = ".content .#{@position} .module.#{@module}[data-name=#{@name}]"
+
+  config: =>
+    @position = "middle"
+
+  router: (event) =>
+  afterInit: =>
 
 
 $ ->

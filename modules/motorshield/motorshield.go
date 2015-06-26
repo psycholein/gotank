@@ -48,7 +48,6 @@ func (m motorshieldModule) Stop() {
 }
 
 func (m motorshieldModule) GetEvent(e event.Event) {
-	fmt.Println(e)
 }
 
 func (m motorshieldModule) Active() []string {

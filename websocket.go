@@ -119,7 +119,6 @@ func sendAllData(e event.Event) {
 	if err != nil {
 		return
 	}
-	fmt.Println("Send if", pool.connections)
 	for c := range pool.connections {
 		c.send <- data
 	}

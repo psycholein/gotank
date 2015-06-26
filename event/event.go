@@ -1,9 +1,5 @@
 package event
 
-import (
-	"fmt"
-)
-
 type Event struct {
 	Module string
 	Name   string
@@ -53,7 +49,6 @@ func handleEvents() {
 				}
 			}
 		}
-		fmt.Println("handleEvents", e)
 	}
 }
 

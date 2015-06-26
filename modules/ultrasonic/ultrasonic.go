@@ -1,7 +1,6 @@
 package ultrasonic
 
 import (
-	"fmt"
 	"gotank/event"
 	"gotank/libs/embd"
 	_ "gotank/libs/embd/host/all"
@@ -54,7 +53,6 @@ func (m ultrasonicModule) Stop() {
 }
 
 func (m ultrasonicModule) GetEvent(e event.Event) {
-	fmt.Println("ultrasonic", e)
 }
 
 func (m ultrasonicModule) Active() []string {

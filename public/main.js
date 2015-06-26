@@ -129,8 +129,7 @@
       }
       switch (event.Value) {
         case "load":
-          this.loadModule(event);
-          return this.initModule(event);
+          return this.loadModule(event);
         case "init":
           return this.initModule(event);
       }
@@ -150,13 +149,11 @@
     };
 
     Resources.prototype.initModule = function(event) {
-      var mod, name;
+      var mod, module, name;
       name = this.ucFirst(event.Module);
-      console.log("test1");
       if (!window[name]) {
         return;
       }
-      console.log("test2");
       mod = this.modules[event.Module];
       if (!mod["modules"]) {
         mod["modules"] = {};
@@ -164,9 +161,8 @@
       if (mod["modules"][event.Name]) {
         return;
       }
-      console.log("test3");
-      mod["modules"][event.Name] = new window[name](this.event, event.Name);
-      return console.log("init", this.modules);
+      module = new window[name](this.event, event.Module, event.Name);
+      return mod["modules"][event.Name] = module;
     };
 
     Resources.prototype.loadResource = function(module, file, type, res) {
@@ -192,13 +188,14 @@
   })();
 
   window.BasicModule = BasicModule = (function() {
-    function BasicModule(event1, name1) {
+    function BasicModule(event1, module1, name1) {
       this.event = event1;
+      this.module = module1;
       this.name = name1;
       this.initTemplate = bind(this.initTemplate, this);
       this.router = bind(this.router, this);
       this.initTemplate();
-      this.event.register(this.event.Module, this.router);
+      this.event.register(this.module, this.router);
     }
 
     BasicModule.prototype.router = function(event) {};

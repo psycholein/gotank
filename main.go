@@ -18,7 +18,7 @@ import (
 
 const (
 	addr  = ":3000"
-	debug = true
+	debug = false
 )
 
 func main() {

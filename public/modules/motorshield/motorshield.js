@@ -14,7 +14,7 @@
     }
 
     Motorshield.prototype.router = function(event) {
-      return console.log("rec, event");
+      return console.log("motorshield", event);
     };
 
     return Motorshield;

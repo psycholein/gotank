@@ -14,7 +14,7 @@
     }
 
     Ultrasonic.prototype.router = function(event) {
-      return console.log("rec, event");
+      return console.log("ultrasonic", event);
     };
 
     return Ultrasonic;

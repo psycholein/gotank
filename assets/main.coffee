@@ -89,11 +89,13 @@ window.Resources = class Resources
   initModule: (event) =>
     name = @ucFirst(event.Module)
     return unless window[name]
+
     mod = @modules[event.Module]
     mod["modules"] = {} unless mod["modules"]
     return if mod["modules"][event.Name]
-    mod["modules"][event.Name] = new window[name](@event, event.Name)
-    console.log("init", @modules)
+
+    module = new window[name](@event, event.Module, event.Name)
+    mod["modules"][event.Name] = module
 
   loadResource: (module, file, type, res) =>
     $.ajax
@@ -108,9 +110,9 @@ window.Resources = class Resources
     str.charAt(0).toUpperCase() + str.substring(1)
 
 window.BasicModule = class BasicModule
-  constructor: (@event, @name) ->
+  constructor: (@event, @module, @name) ->
     @initTemplate()
-    @event.register(@event.Module, @router)
+    @event.register(@module, @router)
   router: (event) =>
   initTemplate: =>
 

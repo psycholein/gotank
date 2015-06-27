@@ -36,6 +36,7 @@
     };
 
     Motorshield.prototype.initKeyboardControl = function() {
+      this.lastControl = null;
       this.keys = [];
       $('body').on('keydown', this.keyDown);
       return $('body').on('keyup', this.keyUp);
@@ -79,7 +80,10 @@
           }
         }
       }
-      return this.send(control);
+      if (this.lastControl !== control) {
+        this.send(control);
+      }
+      return this.lastControl = control;
     };
 
     Motorshield.prototype.keyDown = function(e) {

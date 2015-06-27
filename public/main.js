@@ -93,7 +93,7 @@
     };
 
     Event.prototype.error = function(e) {
-      return this.netwok.reconnect();
+      return this.network.reconnect();
     };
 
     Event.prototype.receive = function(e) {

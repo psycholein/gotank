@@ -11,6 +11,7 @@ window.Motorshield = class Motorshield extends window.BasicModule
     @event.send(@module, @name, 'control', control)
 
   initKeyboardControl: =>
+    @lastControl = null
     @keys = []
     $('body').on('keydown', @keyDown)
     $('body').on('keyup', @keyUp)
@@ -40,7 +41,8 @@ window.Motorshield = class Motorshield extends window.BasicModule
         $control = $(@selector).find("[data-key='#{key}']")
         control = $control.data('event') if $control.length
 
-    @send(control)
+    @send(control) if @lastControl != control
+    @lastControl = control
 
   keyDown: (e) =>
     @handleKeys(e.which, true)

@@ -52,7 +52,7 @@ class Event
     @network.reconnect()
 
   error: (e) =>
-    @netwok.reconnect()
+    @network.reconnect()
 
   receive: (e) =>
     data = JSON.parse(e.data)

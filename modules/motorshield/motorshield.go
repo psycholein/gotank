@@ -50,29 +50,8 @@ func (m motorshieldModule) GetEvent(e event.Event) {
 		return
 	}
 	if e.Task == "control" {
-		control(e)
-	}
-}
-
-func control(e event.Event) {
-	if _, l := left[e.Name]; !l {
-		return
-	}
-	if _, r := right[e.Name]; !r {
-		return
-	}
-
-	switch e.Value {
-	case "forward":
-		forward(e.Name)
-	case "backward":
-		backward(e.Name)
-	case "turnleft":
-		turnleft(e.Name)
-	case "turnright":
-		turnright(e.Name)
-	case "stop":
-		stop(e.Name)
+		c := control{e.Name, e.Value}
+		c.handle()
 	}
 }
 
@@ -99,29 +78,4 @@ func startMotor() {
 		right[key] = l293d.InitMotor(value.Latch, value.Clk, value.Enable, value.Data, value.Right.Pwm, value.Right.Motor)
 		event.SendEvent(event.Event{name, key, "web", "start"})
 	}
-}
-
-func forward(key string) {
-	left[key].Forward()
-	right[key].Forward()
-}
-
-func backward(key string) {
-	left[key].Backward()
-	right[key].Backward()
-}
-
-func turnleft(key string) {
-	left[key].Backward()
-	right[key].Forward()
-}
-
-func turnright(key string) {
-	left[key].Forward()
-	right[key].Backward()
-}
-
-func stop(key string) {
-	left[key].Stop()
-	right[key].Stop()
 }

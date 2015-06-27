@@ -22,7 +22,6 @@ const (
 )
 
 func main() {
-	fmt.Println("Start...")
 	embd.InitGPIO()
 
 	handleCtrlC()
@@ -37,6 +36,7 @@ func main() {
 func handleCtrlC() {
 	c := make(chan os.Signal, 1)
 	signal.Notify(c, os.Interrupt)
+	signal.Notify(c, os.Kill)
 	go func() {
 		<-c
 		end()
@@ -45,15 +45,17 @@ func handleCtrlC() {
 }
 
 func end() {
-	embd.CloseGPIO()
 	stopModules()
 	event.Stop()
+	embd.CloseGPIO()
+	fmt.Println("...End")
 }
 
 func startServer() {
 	event.RegisterEvent("_all", sendAllData)
 	routes()
 	startConnectionHandler()
+	fmt.Println("Start...")
 	if err := http.ListenAndServe(addr, nil); err != nil {
 		log.Fatal("ListenAndServe:", err)
 	}

@@ -10,9 +10,11 @@ window.App = class App
 
 window.Network = class Network
   constructor: (@url) ->
-    @ws       = null
+    @ws           = null
+    @tryReconnect = null
 
   connect: (event) =>
+    return if @ws && @ws.readyState == WebSocket.OPEN
     @ws           = new WebSocket(@url)
     @ws.onopen    = event.connected
     @ws.onclose   = event.disconnected
@@ -24,23 +26,33 @@ window.Network = class Network
     @ws.close()
     @ws = null
 
+  reconnect: =>
+    clearTimeout(@tryConnect)
+    @tryReconnect = setTimeout((=>
+      @connect(@event) if !@ws || @ws.readyState != WebSocket.OPEN
+    ), 1000)
+
   send: (msg) =>
-    @ws.send(msg) if @ws && msg
+    @ws.send(msg) if msg && @ws && @ws.readyState == WebSocket.OPEN
 
 
 class Event
   constructor: (@network) ->
+    @tryConnect = null
     @registered = {}
 
   register: (srcModule, destModuleFunc) =>
     @registered[srcModule] = [] unless @registered[srcModule]
     @registered[srcModule].push(destModuleFunc)
 
-  connected: (e) ->
-    # call available modules
+  connected: (e) =>
+    # connected
 
-  disconnected: (e) ->
-    # reconnect?
+  disconnected: (e) =>
+    @network.reconnect()
+
+  error: (e) =>
+    @netwok.reconnect()
 
   receive: (e) =>
     data = JSON.parse(e.data)
@@ -51,9 +63,6 @@ class Event
     if @registered['_all']
       for func in @registered['_all']
         func(data)
-
-  error: (e) ->
-    # reconnect
 
   send: (module, name, task, value) =>
     data =
@@ -78,7 +87,7 @@ window.Resources = class Resources
         @initModule(event)
 
   loadModule: (event) =>
-    return if event.Name in @modules
+    return if @modules[event.Module]
     @modules[event.Module] = {}
     file = "modules/#{event.Module}/#{event.Module}"
     @loadResource event.Module, "#{file}.js", 'script', 'js'

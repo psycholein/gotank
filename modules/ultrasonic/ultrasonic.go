@@ -31,15 +31,17 @@ var (
 	data      map[string]conf
 	status    chan int
 	sensor    string
+	lastVal   map[string]float64
 )
 
 func Register() {
+	data = make(map[string]conf)
+	lastVal = make(map[string]float64)
 	m := modules.Module{name, ultrasonicModule{}, true}
 	m.Register()
 }
 
 func (m ultrasonicModule) Config() interface{} {
-	data = make(map[string]conf)
 	return &data
 }
 
@@ -94,7 +96,7 @@ func distance() {
 			time.Sleep(50 * time.Microsecond)
 			triggers[sensor].Write(embd.Low)
 
-			time.Sleep(50 * time.Millisecond)
+			time.Sleep(75 * time.Millisecond)
 			status <- timeout
 			time.Sleep(1 * time.Millisecond)
 		}
@@ -126,6 +128,12 @@ func measure(status chan int) {
 		}
 		duration := time.Since(startTime)
 		distance := float64(duration.Nanoseconds()) / 10000000 * 171.5
-		event.SendEvent(event.Event{name, sensor, "distance", strconv.FormatFloat(distance, 'f', 2, 64)})
+		if lastVal[sensor] > 0 {
+			distance = (lastVal[sensor]*2 + distance) / 3
+		}
+		lastVal[sensor] = distance
+
+		value := strconv.FormatFloat(distance, 'f', 2, 64)
+		event.SendEvent(event.Event{name, sensor, "distance", value})
 	}
 }

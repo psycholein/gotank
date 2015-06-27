@@ -29,6 +29,9 @@
     }
 
     Network.prototype.connect = function(event) {
+      if (this.ws && this.ws.readyState === WebSocket.OPEN) {
+        return;
+      }
       this.ws = new WebSocket(this.url);
       this.ws.onopen = event.connected;
       this.ws.onclose = event.disconnected;

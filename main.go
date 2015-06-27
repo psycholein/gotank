@@ -21,7 +21,10 @@ const (
 	debug = false
 )
 
+var running = true
+
 func main() {
+	defer end()
 	embd.InitGPIO()
 
 	handleCtrlC()
@@ -45,6 +48,10 @@ func handleCtrlC() {
 }
 
 func end() {
+	if !running {
+		return
+	}
+	running = false
 	stopModules()
 	event.Stop()
 	embd.CloseGPIO()

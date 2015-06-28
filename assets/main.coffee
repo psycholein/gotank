@@ -27,7 +27,7 @@ window.Network = class Network
     @ws = null
 
   reconnect: =>
-    clearTimeout(@tryConnect)
+    clearTimeout(@tryReconnect)
     @tryReconnect = setTimeout((=>
       @connect(@event) if !@ws || @ws.readyState != WebSocket.OPEN
     ), 1000)

@@ -46,7 +46,7 @@
     };
 
     Network.prototype.reconnect = function() {
-      clearTimeout(this.tryConnect);
+      clearTimeout(this.tryReconnect);
       return this.tryReconnect = setTimeout(((function(_this) {
         return function() {
           if (!_this.ws || _this.ws.readyState !== WebSocket.OPEN) {

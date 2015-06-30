@@ -76,7 +76,6 @@ func watch() {
 
 		status = make(chan statusType, 1)
 		err := inputs[key].Watch(embd.EdgeBoth, func(input embd.DigitalPin) {
-			input.N()
 			read, _ := input.Read()
 			status <- statusType{read, input.N()}
 		})

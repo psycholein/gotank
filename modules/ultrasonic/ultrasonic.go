@@ -88,7 +88,7 @@ func distance() {
 		}
 		e := event.NewEvent(name, key, "web")
 		e.AddData("start", "1")
-		event.SendEvent(e)
+		e.SendEventToWeb()
 	}
 	go measure(status)
 
@@ -110,7 +110,7 @@ func distance() {
 		triggers[key].Close()
 		e := event.NewEvent(name, key, "web")
 		e.AddData("value", "stop")
-		event.SendEvent(e)
+		e.SendEventToWeb()
 	}
 	close(status)
 }
@@ -140,6 +140,8 @@ func measure(status chan int) {
 		value := strconv.FormatFloat(distance, 'f', 2, 64)
 		e := event.NewEvent(name, sensor, "distance")
 		e.AddData("value", value)
-		event.SendEvent(e)
+		e.AddData("posDegree", strconv.Itoa(data[sensor].Position.Degree))
+		e.AddData("posDistance", strconv.Itoa(data[sensor].Position.Distance))
+		e.SendEventToWeb()
 	}
 }

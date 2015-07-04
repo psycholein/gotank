@@ -43,7 +43,7 @@ func (m motorshieldModule) Stop() {
 	for key := range data {
 		e := event.NewEvent(name, key, "web")
 		e.AddData("value", "stop")
-		event.SendEvent(e)
+		e.SendEventToWeb()
 	}
 }
 
@@ -80,6 +80,6 @@ func startMotor() {
 		right[key] = l293d.InitMotor(value.Latch, value.Clk, value.Enable, value.Data, value.Right.Pwm, value.Right.Motor)
 		e := event.NewEvent(name, key, "web")
 		e.AddData("value", "start")
-		event.SendEvent(e)
+		e.SendEventToWeb()
 	}
 }

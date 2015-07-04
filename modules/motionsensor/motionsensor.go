@@ -84,7 +84,7 @@ func watch() {
 		}
 		e := event.NewEvent(name, key, "web")
 		e.AddData("value", "start")
-		event.SendEvent(e)
+		e.SendEventToWeb()
 	}
 
 	for val := range status {
@@ -96,7 +96,7 @@ func watch() {
 			if value.Input == val.pinNum {
 				e := event.NewEvent(name, key, "motion")
 				e.AddData("value", state)
-				event.SendEvent(e)
+				e.SendEventToWeb()
 				break
 			}
 		}
@@ -107,6 +107,6 @@ func watch() {
 		inputs[key].Close()
 		e := event.NewEvent(name, key, "web")
 		e.AddData("value", "stop")
-		event.SendEvent(e)
+		e.SendEventToWeb()
 	}
 }

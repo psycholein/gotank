@@ -1,5 +1,11 @@
 package event
 
+const (
+	all   = 0
+	local = 1
+	web   = 2
+)
+
 type Event struct {
 	Module string
 	Name   string
@@ -8,8 +14,8 @@ type Event struct {
 }
 
 type eventType struct {
-	event Event
-	web   bool
+	event    Event
+	location int
 }
 
 type EventFunc func(Event)
@@ -26,18 +32,22 @@ func (e Event) AddData(name string, value string) {
 	e.Data[name] = value
 }
 
+func (e Event) SendEventToAll() {
+	eventChan <- eventType{e, all}
+}
+
+func (e Event) SendEventToLocal() {
+	eventChan <- eventType{e, local}
+}
+
+func (e Event) SendEventToWeb() {
+	eventChan <- eventType{e, web}
+}
+
 func InitEvents() {
 	register = make(map[string][]EventFunc)
 	eventChan = make(chan eventType)
 	go handleEvents()
-}
-
-func SendEvent(e Event) {
-	eventChan <- eventType{e, false}
-}
-
-func SendWebEvent(e Event) {
-	eventChan <- eventType{e, true}
 }
 
 func RegisterEvent(srcModule string, destModule EventFunc) {
@@ -46,16 +56,23 @@ func RegisterEvent(srcModule string, destModule EventFunc) {
 
 func handleEvents() {
 	for ec := range eventChan {
-		if items, ok := register[ec.event.Module]; ok {
-			for _, item := range items {
-				item(ec.event)
-			}
-		}
-		if !ec.web {
-			if items, ok := register["_all"]; ok {
+		if ec.location == all || ec.location == local {
+			if items, ok := register[ec.event.Module]; ok {
 				for _, item := range items {
 					item(ec.event)
 				}
+			}
+		}
+		if ec.location == all || ec.location == web {
+			if items, ok := register["_web"]; ok {
+				for _, item := range items {
+					item(ec.event)
+				}
+			}
+		}
+		if items, ok := register["_all"]; ok {
+			for _, item := range items {
+				item(ec.event)
 			}
 		}
 	}

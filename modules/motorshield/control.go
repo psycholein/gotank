@@ -10,7 +10,7 @@ type control struct {
 	data map[string]string
 }
 
-func (c control) handle() {
+func (c control) handleControl() {
 	_, l := left[c.key]
 	_, r := right[c.key]
 	value := c.data["value"]
@@ -48,4 +48,9 @@ func (c control) Turnright() {
 func (c control) Stop() {
 	left[c.key].Stop()
 	right[c.key].Stop()
+}
+
+func (c control) Speed(value int) {
+	left[c.key].Speed(value)
+	right[c.key].Speed(value)
 }

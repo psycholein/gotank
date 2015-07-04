@@ -53,7 +53,10 @@ func (m motorshieldModule) GetEvent(e event.Event) {
 	}
 	if e.Task == "control" {
 		c := control{e.Name, e.Data}
-		c.handle()
+		c.handleControl()
+	}
+	if e.Task == "speed" {
+		handleSpeed(e.Name, e.Data)
 	}
 }
 

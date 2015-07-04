@@ -66,7 +66,7 @@ func (m MotorShieldL293d) initMotor() {
 		latchState &= m.bv(motor4A) ^ 255&m.bv(motor4B) ^ 255
 	}
 	m.latchTx()
-	m.Speed(1023)
+	m.Speed(100)
 }
 
 func (m MotorShieldL293d) command(cmd int) {
@@ -137,7 +137,9 @@ func (m MotorShieldL293d) Backward() {
 }
 
 func (m MotorShieldL293d) Speed(i int) {
-	m.pin.SetDuty(i)
+	if m.pin != nil {
+		m.pin.SetDuty(i)
+	}
 }
 
 func (m MotorShieldL293d) Stop() {

@@ -14,6 +14,8 @@
       this.keyDown = bind(this.keyDown, this);
       this.handleKeys = bind(this.handleKeys, this);
       this.initKeyboardControl = bind(this.initKeyboardControl, this);
+      this.sendSpeed = bind(this.sendSpeed, this);
+      this.initSpeedControl = bind(this.initSpeedControl, this);
       this.send = bind(this.send, this);
       this.control = bind(this.control, this);
       this.afterInit = bind(this.afterInit, this);
@@ -21,23 +23,35 @@
     }
 
     Motorshield.prototype.afterInit = function() {
-      $(this.selector).find('.control').on('click', this.control);
-      return this.initKeyboardControl();
+      this.initKeyboardControl();
+      return this.initSpeedControl();
     };
 
     Motorshield.prototype.control = function(e) {
       var control;
       control = $(e.currentTarget).data('event');
-      return this.send(control);
+      return this.send('control', control);
     };
 
-    Motorshield.prototype.send = function(control) {
-      return this.event.send(this.module, this.name, 'control', {
+    Motorshield.prototype.send = function(task, control) {
+      return this.event.send(this.module, this.name, task, {
         value: control
       });
     };
 
+    Motorshield.prototype.initSpeedControl = function() {
+      return $(this.selector).find('.speed').on('click', this.sendSpeed);
+    };
+
+    Motorshield.prototype.sendSpeed = function(e) {
+      var value;
+      e.preventDefault();
+      value = $(this.selector).find('.speed-control').val();
+      return this.send('speed', value);
+    };
+
     Motorshield.prototype.initKeyboardControl = function() {
+      $(this.selector).find('.control').on('click', this.control);
       this.lastControl = null;
       this.keys = [];
       $('body').on('keydown', this.keyDown);
@@ -83,7 +97,7 @@
         }
       }
       if (this.lastControl !== control) {
-        this.send(control);
+        this.send('control', control);
       }
       return this.lastControl = control;
     };

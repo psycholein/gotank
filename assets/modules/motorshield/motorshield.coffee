@@ -1,16 +1,25 @@
 window.Motorshield = class Motorshield extends window.BasicModule
   afterInit: =>
-    $(@selector).find('.control').on 'click', @control
     @initKeyboardControl()
+    @initSpeedControl()
 
   control: (e) =>
     control = $(e.currentTarget).data('event')
-    @send(control)
+    @send('control', control)
 
-  send: (control) =>
-    @event.send(@module, @name, 'control', { value: control })
+  send: (task, control) =>
+    @event.send(@module, @name, task, { value: control })
+
+  initSpeedControl: =>
+    $(@selector).find('.speed').on 'click', @sendSpeed
+
+  sendSpeed: (e) =>
+    e.preventDefault()
+    value = $(@selector).find('.speed-control').val()
+    @send('speed', value)
 
   initKeyboardControl: =>
+    $(@selector).find('.control').on 'click', @control
     @lastControl = null
     @keys = []
     $('body').on('keydown', @keyDown)
@@ -41,7 +50,7 @@ window.Motorshield = class Motorshield extends window.BasicModule
         $control = $(@selector).find("[data-key='#{key}']")
         control = $control.data('event') if $control.length
 
-    @send(control) if @lastControl != control
+    @send('control', control) if @lastControl != control
     @lastControl = control
 
   keyDown: (e) =>

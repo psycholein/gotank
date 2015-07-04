@@ -32,9 +32,13 @@ func stopModules() {
 func sendModulesToWeb(c *connection) {
 	for _, module := range modules.AvailableModules {
 		if module.Web {
-			sendData(c, event.Event{module.Name, "module", "web", "load"})
+			e := event.NewEvent(module.Name, "module", "web")
+			e.AddData("value", "load")
+			sendData(c, e)
 			for _, typ := range module.Attr.Active() {
-				sendData(c, event.Event{module.Name, typ, "web", "init"})
+				e := event.NewEvent(module.Name, typ, "web")
+				e.AddData("value", "init")
+				sendData(c, e)
 			}
 		}
 	}

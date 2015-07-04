@@ -5,4 +5,4 @@ window.Ultrasonic = class Ultrasonic extends window.BasicModule
   router: (event) =>
     switch event.Task
       when "distance"
-        $(@selector).find('.distance').text(event.Value)
+        $(@selector).find('.distance').text(event.Data.value)

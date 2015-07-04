@@ -14,6 +14,7 @@ import (
 	"net/http"
 	"os"
 	"os/signal"
+	"runtime"
 )
 
 const (
@@ -25,6 +26,7 @@ var running = true
 
 func main() {
 	defer end()
+	runtime.GOMAXPROCS(10)
 	embd.InitGPIO()
 
 	handleCtrlC()
@@ -59,7 +61,7 @@ func end() {
 }
 
 func startServer() {
-	event.RegisterEvent("_all", sendAllData)
+	event.RegisterEvent("_all", sendDataToAll)
 	routes()
 	startConnectionHandler()
 	fmt.Println("Start...")

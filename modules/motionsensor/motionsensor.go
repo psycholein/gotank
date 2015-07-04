@@ -82,7 +82,9 @@ func watch() {
 		if err != nil {
 			panic(err)
 		}
-		event.SendEvent(event.Event{name, key, "web", "start"})
+		e := event.NewEvent(name, key, "web")
+		e.AddData("value", "start")
+		event.SendEvent(e)
 	}
 
 	for val := range status {
@@ -92,7 +94,9 @@ func watch() {
 		}
 		for key, value := range data {
 			if value.Input == val.pinNum {
-				event.SendEvent(event.Event{name, key, "motion", state})
+				e := event.NewEvent(name, key, "motion")
+				e.AddData("value", state)
+				event.SendEvent(e)
 				break
 			}
 		}
@@ -101,6 +105,8 @@ func watch() {
 	for key := range data {
 		inputs[key].StopWatching()
 		inputs[key].Close()
-		event.SendEvent(event.Event{name, key, "web", "stop"})
+		e := event.NewEvent(name, key, "web")
+		e.AddData("value", "stop")
+		event.SendEvent(e)
 	}
 }

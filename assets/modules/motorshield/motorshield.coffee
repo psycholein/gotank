@@ -8,7 +8,7 @@ window.Motorshield = class Motorshield extends window.BasicModule
     @send(control)
 
   send: (control) =>
-    @event.send(@module, @name, 'control', control)
+    @event.send(@module, @name, 'control', { value: control })
 
   initKeyboardControl: =>
     @lastControl = null

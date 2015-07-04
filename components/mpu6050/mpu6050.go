@@ -31,24 +31,24 @@ type ThreeDData struct {
 
 type MPU6050Driver struct {
 	bus           embd.I2CBus
-	init          bool
 	Accelerometer ThreeDData
 	Gyroscope     ThreeDData
 	Temperature   float64
 }
 
+var initialized bool
+
 func NewMPU6050Driver(bus embd.I2CBus) *MPU6050Driver {
 	m := &MPU6050Driver{
-		bus:  bus,
-		init: false,
+		bus: bus,
 	}
 
 	return m
 }
 
 func (h *MPU6050Driver) Read() (err error) {
-	if !h.init {
-		h.init = true
+	if !initialized {
+		initialized = true
 		err = h.initialize()
 		if err != nil {
 			return

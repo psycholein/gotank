@@ -114,7 +114,7 @@ func (pool *connectionPool) run() {
 	}
 }
 
-func sendAllData(e event.Event) {
+func sendDataToAll(e event.Event) {
 	data, err := json.Marshal(e)
 	if err != nil {
 		return

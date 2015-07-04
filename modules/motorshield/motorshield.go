@@ -41,7 +41,9 @@ func (m motorshieldModule) Start() {
 func (m motorshieldModule) Stop() {
 	running = false
 	for key := range data {
-		event.SendEvent(event.Event{name, key, "web", "stop"})
+		e := event.NewEvent(name, key, "web")
+		e.AddData("value", "stop")
+		event.SendEvent(e)
 	}
 }
 
@@ -50,7 +52,7 @@ func (m motorshieldModule) GetEvent(e event.Event) {
 		return
 	}
 	if e.Task == "control" {
-		c := control{e.Name, e.Value}
+		c := control{e.Name, e.Data}
 		c.handle()
 	}
 }
@@ -76,6 +78,8 @@ func startMotor() {
 		// latch int, clk int, enable int, data int, pwm int, motor int
 		left[key] = l293d.InitMotor(value.Latch, value.Clk, value.Enable, value.Data, value.Left.Pwm, value.Left.Motor)
 		right[key] = l293d.InitMotor(value.Latch, value.Clk, value.Enable, value.Data, value.Right.Pwm, value.Right.Motor)
-		event.SendEvent(event.Event{name, key, "web", "start"})
+		e := event.NewEvent(name, key, "web")
+		e.AddData("value", "start")
+		event.SendEvent(e)
 	}
 }

@@ -32,7 +32,9 @@
     };
 
     Motorshield.prototype.send = function(control) {
-      return this.event.send(this.module, this.name, 'control', control);
+      return this.event.send(this.module, this.name, 'control', {
+        value: control
+      });
     };
 
     Motorshield.prototype.initKeyboardControl = function() {

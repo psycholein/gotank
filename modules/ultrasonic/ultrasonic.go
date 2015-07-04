@@ -86,7 +86,9 @@ func distance() {
 		if err != nil {
 			panic(err)
 		}
-		event.SendEvent(event.Event{name, key, "web", "start"})
+		e := event.NewEvent(name, key, "web")
+		e.AddData("start", "1")
+		event.SendEvent(e)
 	}
 	go measure(status)
 
@@ -106,7 +108,9 @@ func distance() {
 		echos[key].StopWatching()
 		echos[key].Close()
 		triggers[key].Close()
-		event.SendEvent(event.Event{name, key, "web", "stop"})
+		e := event.NewEvent(name, key, "web")
+		e.AddData("value", "stop")
+		event.SendEvent(e)
 	}
 	close(status)
 }
@@ -134,6 +138,8 @@ func measure(status chan int) {
 		lastVal[sensor] = distance
 
 		value := strconv.FormatFloat(distance, 'f', 2, 64)
-		event.SendEvent(event.Event{name, sensor, "distance", value})
+		e := event.NewEvent(name, sensor, "distance")
+		e.AddData("value", value)
+		event.SendEvent(e)
 	}
 }

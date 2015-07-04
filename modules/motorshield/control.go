@@ -6,18 +6,19 @@ import (
 )
 
 type control struct {
-	key   string
-	value string
+	key  string
+	data map[string]string
 }
 
 func (c control) handle() {
 	_, l := left[c.key]
 	_, r := right[c.key]
-	if len(c.value) < 2 || !l || !r {
+	value := c.data["value"]
+	if len(value) < 2 || !l || !r {
 		return
 	}
 
-	methodName := strings.ToUpper(c.value[0:1]) + c.value[1:len(c.value)]
+	methodName := strings.ToUpper(value[0:1]) + value[1:len(value)]
 	method := reflect.ValueOf(&c).MethodByName(methodName)
 	if method.IsValid() {
 		method.Call([]reflect.Value{})

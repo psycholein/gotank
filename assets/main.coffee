@@ -64,13 +64,13 @@ class Event
       for func in @registered['_all']
         func(data)
 
-  send: (module, name, task, value) =>
-    data =
+  send: (module, name, task, data) =>
+    event =
       Module: module,
       Name: name,
       Task: task,
-      Value: value
-    @network.send(JSON.stringify data)
+      Data: data
+    @network.send(JSON.stringify event)
 
 
 window.Resources = class Resources
@@ -80,7 +80,7 @@ window.Resources = class Resources
 
   router: (event) =>
     return unless event.Name == 'module' || event.Task == 'web'
-    switch (event.Value)
+    switch (event.Data.value)
       when "load"
         @loadModule(event)
       when "init"

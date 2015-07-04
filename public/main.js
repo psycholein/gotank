@@ -120,15 +120,15 @@
       }
     };
 
-    Event.prototype.send = function(module, name, task, value) {
-      var data;
-      data = {
+    Event.prototype.send = function(module, name, task, data) {
+      var event;
+      event = {
         Module: module,
         Name: name,
         Task: task,
-        Value: value
+        Data: data
       };
-      return this.network.send(JSON.stringify(data));
+      return this.network.send(JSON.stringify(event));
     };
 
     return Event;
@@ -151,7 +151,7 @@
       if (!(event.Name === 'module' || event.Task === 'web')) {
         return;
       }
-      switch (event.Value) {
+      switch (event.Data.value) {
         case "load":
           return this.loadModule(event);
         case "init":

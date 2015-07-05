@@ -72,21 +72,21 @@ func (m ultrasonicModule) Active() []string {
 func distance() {
 	triggers := make(map[string]embd.DigitalPin)
 	echos := make(map[string]embd.DigitalPin)
-	for key, value := range data {
-		echos[key], _ = embd.NewDigitalPin(value.Echo)
-		echos[key].SetDirection(embd.In)
-		triggers[key], _ = embd.NewDigitalPin(value.Trigger)
-		triggers[key].SetDirection(embd.Out)
+	for sensor, value := range data {
+		echos[sensor], _ = embd.NewDigitalPin(value.Echo)
+		echos[sensor].SetDirection(embd.In)
+		triggers[sensor], _ = embd.NewDigitalPin(value.Trigger)
+		triggers[sensor].SetDirection(embd.Out)
 
 		status = make(chan int, 1)
-		err := echos[key].Watch(embd.EdgeBoth, func(echo embd.DigitalPin) {
+		err := echos[sensor].Watch(embd.EdgeBoth, func(echo embd.DigitalPin) {
 			read, _ := echo.Read()
 			status <- read
 		})
 		if err != nil {
 			panic(err)
 		}
-		e := event.NewEvent(name, key, "web")
+		e := event.NewEvent(name, sensor, "web")
 		e.AddData("start", "1")
 		e.SendEventToWeb()
 	}
@@ -98,7 +98,7 @@ func distance() {
 			time.Sleep(50 * time.Microsecond)
 			triggers[sensor].Write(embd.Low)
 
-			time.Sleep(75 * time.Millisecond)
+			time.Sleep(70 * time.Millisecond)
 			status <- timeout
 			time.Sleep(1 * time.Millisecond)
 		}

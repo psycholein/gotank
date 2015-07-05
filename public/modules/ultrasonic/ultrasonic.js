@@ -19,9 +19,11 @@
     };
 
     Ultrasonic.prototype.router = function(event) {
+      var $module;
       switch (event.Task) {
         case "distance":
-          return $(this.selector).find('.distance').text(event.Data.value);
+          $module = $(this.selector).filter("[data-name='" + event.Name + "']");
+          return $module.find('.distance').text(event.Data.value);
       }
     };
 

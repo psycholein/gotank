@@ -1,6 +1,12 @@
-ahead:
+front:
   trigger: 4
   echo: 17
   position:
     distance: 8
     degree: 0
+back:
+  trigger: 11
+  echo: 10
+  position:
+    distance: 8
+    degree: 180

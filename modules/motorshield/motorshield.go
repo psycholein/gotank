@@ -20,7 +20,7 @@ type conf struct {
 
 var running = false
 var data map[string]conf
-var left, right map[string]l293d.MotorShieldL293d
+var left, right map[string]l293d.MotorL293d
 
 func Register() {
 	m := modules.Module{name, motorshieldModule{}, true}
@@ -75,12 +75,13 @@ func (m motorshieldModule) Active() []string {
 func startMotor() {
 	running = true
 
-	left = make(map[string]l293d.MotorShieldL293d)
-	right = make(map[string]l293d.MotorShieldL293d)
+	left = make(map[string]l293d.MotorL293d)
+	right = make(map[string]l293d.MotorL293d)
 	for key, value := range data {
-		// latch int, clk int, enable int, data int, pwm int, motor int
-		left[key] = l293d.InitMotor(value.Latch, value.Clk, value.Enable, value.Data, value.Left.Pwm, value.Left.Motor)
-		right[key] = l293d.InitMotor(value.Latch, value.Clk, value.Enable, value.Data, value.Right.Pwm, value.Right.Motor)
+		// latch int, clk int, enable int, data int - pwm int, motor int
+		l := l293d.InitL293d(value.Latch, value.Clk, value.Enable, value.Data)
+		left[key] = l.InitMotor(value.Left.Pwm, value.Left.Motor)
+		right[key] = l.InitMotor(value.Right.Pwm, value.Right.Motor)
 		e := event.NewEvent(name, key, "web")
 		e.AddData("value", "start")
 		e.SendEventToWeb()

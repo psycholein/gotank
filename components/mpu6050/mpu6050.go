@@ -3,6 +3,7 @@ package mpu6050
 import (
 	"bytes"
 	"encoding/binary"
+	"gotank/i2c"
 	"gotank/libs/embd"
 	_ "gotank/libs/embd/host/all"
 )
@@ -47,6 +48,8 @@ func NewMPU6050Driver(bus embd.I2CBus) *MPU6050Driver {
 }
 
 func (h *MPU6050Driver) Read() (err error) {
+	i2c.I2cMutex.Lock()
+	defer i2c.I2cMutex.Unlock()
 	if !initialized {
 		initialized = true
 		err = h.initialize()
@@ -81,6 +84,8 @@ func (h *MPU6050Driver) write(reg byte, bytes []byte) (err error) {
 }
 
 func (h *MPU6050Driver) initialize() (err error) {
+	i2c.I2cMutex.Lock()
+	defer i2c.I2cMutex.Unlock()
 	err = h.write(MPU6050_RA_PWR_MGMT_1, []byte{
 		MPU6050_PWR1_CLKSEL_BIT,
 		MPU6050_PWR1_CLKSEL_LENGTH,

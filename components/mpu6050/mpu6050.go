@@ -35,23 +35,22 @@ type MPU6050Driver struct {
 	Accelerometer ThreeDData
 	Gyroscope     ThreeDData
 	Temperature   float64
+	initialized   bool
 }
-
-var initialized bool
 
 func NewMPU6050Driver(bus embd.I2CBus) *MPU6050Driver {
 	m := &MPU6050Driver{
-		bus: bus,
+		bus:         bus,
+		initialized: false,
 	}
-
 	return m
 }
 
 func (h *MPU6050Driver) Read() (err error) {
 	i2c.I2cMutex.Lock()
 	defer i2c.I2cMutex.Unlock()
-	if !initialized {
-		initialized = true
+	if !h.initialized {
+		h.initialized = true
 		err = h.initialize()
 		if err != nil {
 			return

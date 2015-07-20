@@ -40,12 +40,12 @@ const (
 	release  = 3
 )
 
-func InitL293d(latch int, clk int, enable int, data int) L293d {
-	return L293d{latch, clk, enable, data, 0}
+func InitL293d(latch int, clk int, enable int, data int) *L293d {
+	return &L293d{latch, clk, enable, data, 0}
 }
 
-func (l L293d) InitMotor(pwm int, motor int) MotorL293d {
-	m := MotorL293d{pwm, motor, l, nil}
+func (l L293d) InitMotor(pwm int, motor int) *MotorL293d {
+	m := &MotorL293d{pwm, motor, l, nil}
 	m.init()
 	return m
 }

@@ -2,4 +2,13 @@ package i2c
 
 import "sync"
 
-var I2cMutex sync.Mutex
+var i2cMutex = &sync.Mutex{}
+
+func Lock() {
+	i2cMutex.Lock()
+}
+
+func Unlock() {
+	i2cMutex.Unlock()
+
+}

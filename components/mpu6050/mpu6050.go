@@ -47,8 +47,8 @@ func NewMPU6050Driver(bus embd.I2CBus) *MPU6050Driver {
 }
 
 func (h *MPU6050Driver) Read() (err error) {
-	i2c.I2cMutex.Lock()
-	defer i2c.I2cMutex.Unlock()
+	i2c.Lock()
+	defer i2c.Unlock()
 	if !h.initialized {
 		h.initialized = true
 		err = h.initialize()
@@ -83,8 +83,6 @@ func (h *MPU6050Driver) write(reg byte, bytes []byte) (err error) {
 }
 
 func (h *MPU6050Driver) initialize() (err error) {
-	i2c.I2cMutex.Lock()
-	defer i2c.I2cMutex.Unlock()
 	err = h.write(MPU6050_RA_PWR_MGMT_1, []byte{
 		MPU6050_PWR1_CLKSEL_BIT,
 		MPU6050_PWR1_CLKSEL_LENGTH,

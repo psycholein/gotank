@@ -96,7 +96,7 @@ func watch() {
 			if value.Input == val.pinNum {
 				e := event.NewEvent(name, key, "motion")
 				e.AddData("value", state)
-				e.SendEventToWeb()
+				e.SendEventToAll()
 				break
 			}
 		}

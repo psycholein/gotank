@@ -142,6 +142,6 @@ func measure(status chan int) {
 		e.AddData("value", value)
 		e.AddData("posDegree", strconv.Itoa(data[sensor].Position.Degree))
 		e.AddData("posDistance", strconv.Itoa(data[sensor].Position.Distance))
-		e.SendEventToWeb()
+		e.SendEventToAll()
 	}
 }

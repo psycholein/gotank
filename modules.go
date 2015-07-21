@@ -4,6 +4,9 @@ import (
 	"gotank/config"
 	"gotank/event"
 	"gotank/modules"
+	"gotank/modules/accelerometer"
+	"gotank/modules/compass"
+	"gotank/modules/motion"
 	"gotank/modules/motorshield"
 	"gotank/modules/ultrasonic"
 )
@@ -15,6 +18,9 @@ type mainConfig struct {
 func registerModules() {
 	motorshield.Register()
 	ultrasonic.Register()
+	motion.Register()
+	compass.Register()
+	accelerometer.Register()
 }
 
 func initModules() {

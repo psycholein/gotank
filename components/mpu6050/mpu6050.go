@@ -72,6 +72,18 @@ func (h *MPU6050Driver) Read() (err error) {
 	return nil
 }
 
+func (h *MPU6050Driver) GetGyroscope() (x int16, y int16, z int16) {
+	return h.Gyroscope.X, h.Gyroscope.Y, h.Gyroscope.Z
+}
+
+func (h *MPU6050Driver) GetAccelerometer() (x int16, y int16, z int16) {
+	return h.Gyroscope.X, h.Gyroscope.Y, h.Gyroscope.Z
+}
+
+func (h *MPU6050Driver) GetTemperature() (celsius float64) {
+	return h.Temperature
+}
+
 func (h *MPU6050Driver) write(reg byte, bytes []byte) (err error) {
 	for _, b := range bytes {
 		err = h.bus.WriteByteToReg(MPU6050_ADDR, reg, b)

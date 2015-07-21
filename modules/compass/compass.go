@@ -12,7 +12,7 @@ import (
 
 const name = "compass"
 
-type magnetoModule struct{}
+type compassModule struct{}
 type conf struct {
 	Degree, Min, Rotation int
 }
@@ -25,27 +25,27 @@ var (
 
 func Register() {
 	data = make(map[string]conf)
-	m := modules.Module{name, magnetoModule{}, true}
+	m := modules.Module{name, compassModule{}, true}
 	m.Register()
 }
 
-func (m magnetoModule) Config() interface{} {
+func (m compassModule) Config() interface{} {
 	return &data
 }
 
-func (m magnetoModule) Start() {
+func (m compassModule) Start() {
 	running = true
 	go read()
 }
 
-func (m magnetoModule) Stop() {
+func (m compassModule) Stop() {
 	running = false
 }
 
-func (m magnetoModule) GetEvent(e event.Event) {
+func (m compassModule) GetEvent(e event.Event) {
 }
 
-func (m magnetoModule) Active() []string {
+func (m compassModule) Active() []string {
 	var active []string
 	if data == nil {
 		return active

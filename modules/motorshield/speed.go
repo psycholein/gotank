@@ -1,6 +1,9 @@
 package motorshield
 
-import "strconv"
+import (
+	"gotank/event"
+	"strconv"
+)
 
 func handleSpeed(key string, data map[string]string) {
 	_, l := left[key]
@@ -13,7 +16,11 @@ func handleSpeed(key string, data map[string]string) {
 		value = 1024
 	}
 
-	setSpeed(name, value)
+	setSpeed(key, value)
+
+	e := event.NewEvent(name, key, "speed")
+	e.AddData("value", data["value"])
+	e.SendEventToAll()
 }
 
 func setSpeed(key string, value int) {

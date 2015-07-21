@@ -1,6 +1,7 @@
 package motorshield
 
 import (
+	"gotank/event"
 	"reflect"
 	"strings"
 )
@@ -22,6 +23,9 @@ func (c control) handleControl() {
 	method := reflect.ValueOf(&c).MethodByName(methodName)
 	if method.IsValid() {
 		method.Call([]reflect.Value{})
+		e := event.NewEvent(name, c.key, "control")
+		e.AddData("value", value)
+		e.SendEventToAll()
 	}
 }
 

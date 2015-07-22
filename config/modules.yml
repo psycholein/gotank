@@ -1,3 +1,4 @@
 modules:
   - motorshield
   - ultrasonic
+  - accelerometer

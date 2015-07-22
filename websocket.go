@@ -137,5 +137,5 @@ func handleReceive(m *message) {
 	if err := json.Unmarshal(m.message, &e); err != nil {
 		return
 	}
-	e.SendEventToLocal()
+	go e.SendEventToLocal()
 }

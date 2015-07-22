@@ -14,7 +14,6 @@ const name = "accelerometer"
 
 type accelerometerModule struct{}
 type conf struct {
-	Degree, Min, Rotation int
 }
 
 var (
@@ -67,18 +66,19 @@ func read() {
 		for key := range data {
 			e := event.NewEvent(name, key, "accelerometer")
 
+			accelerometer[key].Read()
 			temperature := accelerometer[key].GetTemperature()
 			e.AddData("temperature", strconv.FormatFloat(temperature, 'f', 2, 64))
 
 			accX, accY, accZ := accelerometer[key].GetAccelerometer()
-			e.AddData("accX", string(accX))
-			e.AddData("accY", string(accY))
-			e.AddData("accZ", string(accZ))
+			e.AddData("accX", strconv.Itoa(int(accX)))
+			e.AddData("accY", strconv.Itoa(int(accY)))
+			e.AddData("accZ", strconv.Itoa(int(accZ)))
 
 			gyroX, gyroY, gyroZ := accelerometer[key].GetGyroscope()
-			e.AddData("gyroX", string(gyroX))
-			e.AddData("gyroY", string(gyroY))
-			e.AddData("gyroZ", string(gyroZ))
+			e.AddData("gyroX", strconv.Itoa(int(gyroX)))
+			e.AddData("gyroY", strconv.Itoa(int(gyroY)))
+			e.AddData("gyroZ", strconv.Itoa(int(gyroZ)))
 
 			e.SendEventToAll()
 		}

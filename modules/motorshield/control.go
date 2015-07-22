@@ -23,9 +23,9 @@ func (c control) handleControl() {
 	method := reflect.ValueOf(&c).MethodByName(methodName)
 	if method.IsValid() {
 		method.Call([]reflect.Value{})
-		e := event.NewEvent(name, c.key, "control")
+		e := event.NewEvent(name, c.key, "control_feeback")
 		e.AddData("value", value)
-		e.SendEventToAll()
+		go e.SendEventToAll()
 	}
 }
 

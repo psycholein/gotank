@@ -98,9 +98,9 @@ func distance() {
 			time.Sleep(50 * time.Microsecond)
 			triggers[sensor].Write(embd.Low)
 
-			time.Sleep(70 * time.Millisecond)
+			time.Sleep(75 * time.Millisecond)
 			status <- timeout
-			time.Sleep(1 * time.Millisecond)
+			time.Sleep(5 * time.Millisecond)
 		}
 	}
 

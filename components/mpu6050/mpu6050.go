@@ -66,7 +66,7 @@ func (h *MPU6050Driver) Read() (err error) {
 	var temperature int16
 
 	binary.Read(buf, binary.BigEndian, &h.Accelerometer)
-	binary.Read(buf, binary.BigEndian, temperature)
+	binary.Read(buf, binary.BigEndian, &temperature)
 	binary.Read(buf, binary.BigEndian, &h.Gyroscope)
 	h.Temperature = float64(temperature)/340 + 36.53
 	return nil

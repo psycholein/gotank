@@ -123,14 +123,14 @@ func (h *HMC5883LDriver) write(reg byte, bytes []byte) (err error) {
 }
 
 func (h *HMC5883LDriver) initialize() (err error) {
-	h.setScale(1.3)
+	h.SetScale(1.3)
 	h.setContinuousMode()
-	h.setDeclination(3, 28)
+	h.SetDeclination(3, 28)
 
 	return nil
 }
 
-func (h *HMC5883LDriver) setScale(gauss float64) {
+func (h *HMC5883LDriver) SetScale(gauss float64) {
 	var scaleReg byte
 	switch gauss {
 	case 0.88:
@@ -166,7 +166,7 @@ func (h *HMC5883LDriver) setContinuousMode() {
 	h.setOptions(ModeRegister, MeasurementContinuous)
 }
 
-func (h *HMC5883LDriver) setDeclination(degree int, min int) {
+func (h *HMC5883LDriver) SetDeclination(degree int, min int) {
 	h.declination = (float64(degree) + float64(min)/60)
 }
 

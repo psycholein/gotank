@@ -20,7 +20,7 @@ func handleSpeed(key string, data map[string]string) {
 
 	e := event.NewEvent(name, key, "speed")
 	e.AddData("value", data["value"])
-	e.SendEventToAll()
+	go e.SendEventToAll()
 }
 
 func setSpeed(key string, value int) {

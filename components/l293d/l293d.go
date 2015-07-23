@@ -46,6 +46,7 @@ func bv(i byte) byte {
 
 func InitL293d(latch int, clk int, enable int, data int) L293d {
 	l293d := L293d{latch, clk, enable, data, 0}
+	l293d.init()
 	return l293d
 }
 

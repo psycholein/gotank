@@ -16,7 +16,7 @@ type MotorL293dInterface interface {
 
 type MotorL293d struct {
 	pwm, motor int
-	l293d      L293d
+	l293d      *L293d
 	pin        embd.PWMPin
 }
 
@@ -40,40 +40,70 @@ const (
 	release  = 3
 )
 
-func InitL293d(latch int, clk int, enable int, data int) *L293d {
-	return &L293d{latch, clk, enable, data, 0}
+func bv(i byte) byte {
+	return 1 << i
 }
 
-func (l L293d) InitMotor(pwm int, motor int) *MotorL293d {
+func InitL293d(latch int, clk int, enable int, data int) L293d {
+	l293d := L293d{latch, clk, enable, data, 0}
+	return l293d
+}
+
+func (l *L293d) init() {
+	embd.SetDirection(l.latch, embd.Out)
+	embd.SetDirection(l.enable, embd.Out)
+	embd.SetDirection(l.data, embd.Out)
+	embd.SetDirection(l.clk, embd.Out)
+	l.latchTx()
+	embd.DigitalWrite(l.enable, embd.Low)
+}
+
+func (l *L293d) InitMotor(pwm int, motor int) *MotorL293d {
 	m := &MotorL293d{pwm, motor, l, nil}
 	m.init()
 	return m
 }
 
+func (l *L293d) latchTx() {
+	embd.DigitalWrite(l.latch, embd.Low)
+	time.Sleep(1 * time.Microsecond)
+	embd.DigitalWrite(l.data, embd.Low)
+	time.Sleep(1 * time.Microsecond)
+	var i byte
+	for i = 0; i < 8; i++ {
+		embd.DigitalWrite(l.clk, embd.Low)
+		time.Sleep(1 * time.Microsecond)
+		if l.latchState&bv(7-i) > 0 {
+			embd.DigitalWrite(l.data, embd.High)
+		} else {
+			embd.DigitalWrite(l.data, embd.Low)
+		}
+		time.Sleep(1 * time.Microsecond)
+		embd.DigitalWrite(l.clk, embd.High)
+		time.Sleep(1 * time.Microsecond)
+	}
+	time.Sleep(1 * time.Microsecond)
+	embd.DigitalWrite(l.latch, embd.High)
+}
+
 func (m MotorL293d) init() {
-	embd.SetDirection(m.l293d.latch, embd.Out)
-	embd.SetDirection(m.l293d.enable, embd.Out)
-	embd.SetDirection(m.l293d.data, embd.Out)
-	embd.SetDirection(m.l293d.clk, embd.Out)
 	m.pin, _ = embd.NewPWMPin(m.pwm)
-	m.latchTx()
-	embd.DigitalWrite(m.l293d.enable, embd.Low)
 }
 
 func (m MotorL293d) initMotor() {
 	if m.motor == 1 {
-		m.l293d.latchState &= m.bv(motor1A) ^ 255&m.bv(motor1B) ^ 255
+		m.l293d.latchState &= bv(motor1A) ^ 255&bv(motor1B) ^ 255
 	}
 	if m.motor == 2 {
-		m.l293d.latchState &= m.bv(motor2A) ^ 255&m.bv(motor2B) ^ 255
+		m.l293d.latchState &= bv(motor2A) ^ 255&bv(motor2B) ^ 255
 	}
 	if m.motor == 3 {
-		m.l293d.latchState &= m.bv(motor3A) ^ 255&m.bv(motor3B) ^ 255
+		m.l293d.latchState &= bv(motor3A) ^ 255&bv(motor3B) ^ 255
 	}
 	if m.motor == 4 {
-		m.l293d.latchState &= m.bv(motor4A) ^ 255&m.bv(motor4B) ^ 255
+		m.l293d.latchState &= bv(motor4A) ^ 255&bv(motor4B) ^ 255
 	}
-	m.latchTx()
+	m.l293d.latchTx()
 	m.Speed(100)
 }
 
@@ -96,44 +126,18 @@ func (m MotorL293d) command(cmd int) {
 		b = motor4B
 	}
 	if cmd == forward {
-		m.l293d.latchState |= m.bv(a)
-		m.l293d.latchState &= m.bv(b) ^ 255
+		m.l293d.latchState |= bv(a)
+		m.l293d.latchState &= bv(b) ^ 255
 	}
 	if cmd == backward {
-		m.l293d.latchState &= m.bv(a) ^ 255
-		m.l293d.latchState |= m.bv(b)
+		m.l293d.latchState &= bv(a) ^ 255
+		m.l293d.latchState |= bv(b)
 	}
 	if cmd == release {
-		m.l293d.latchState &= m.bv(a) ^ 255
-		m.l293d.latchState &= m.bv(b) ^ 255
+		m.l293d.latchState &= bv(a) ^ 255
+		m.l293d.latchState &= bv(b) ^ 255
 	}
-	m.latchTx()
-}
-
-func (m MotorL293d) latchTx() {
-	embd.DigitalWrite(m.l293d.latch, embd.Low)
-	time.Sleep(1 * time.Microsecond)
-	embd.DigitalWrite(m.l293d.data, embd.Low)
-	time.Sleep(1 * time.Microsecond)
-	var i byte
-	for i = 0; i < 8; i++ {
-		embd.DigitalWrite(m.l293d.clk, embd.Low)
-		time.Sleep(1 * time.Microsecond)
-		if m.l293d.latchState&m.bv(7-i) > 0 {
-			embd.DigitalWrite(m.l293d.data, embd.High)
-		} else {
-			embd.DigitalWrite(m.l293d.data, embd.Low)
-		}
-		time.Sleep(1 * time.Microsecond)
-		embd.DigitalWrite(m.l293d.clk, embd.High)
-		time.Sleep(1 * time.Microsecond)
-	}
-	time.Sleep(1 * time.Microsecond)
-	embd.DigitalWrite(m.l293d.latch, embd.High)
-}
-
-func (m MotorL293d) bv(i byte) byte {
-	return 1 << i
+	m.l293d.latchTx()
 }
 
 func (m MotorL293d) Forward() {

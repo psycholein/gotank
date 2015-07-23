@@ -24,19 +24,22 @@ type conf struct {
 	Trigger, Echo int
 	Position      position
 }
+type messureType struct {
+	distance  float64
+	run       bool
+	name      string
+	startTime time.Time
+}
+type statusType struct {
+	pin   int
+	value int
+}
 
 var (
-	running   = false
-	startTime = time.Now()
-	data      = make(map[string]conf)
-	status    chan int
-	sensor    string
-	lastVal   = make(map[string]float64)
-	messures  = make(map[int]struct {
-		distance float64
-		run      bool
-		value    int
-	})
+	running  = false
+	data     = make(map[string]conf)
+	status   = make(chan statusType)
+	messures = make(map[int]messureType)
 )
 
 func Register() {
@@ -80,11 +83,11 @@ func distance() {
 		echos[sensor].SetDirection(embd.In)
 		triggers[sensor], _ = embd.NewDigitalPin(value.Trigger)
 		triggers[sensor].SetDirection(embd.Out)
+		messures[value.Echo] = messureType{name: sensor}
 
-		status = make(chan int)
 		err := echos[sensor].Watch(embd.EdgeBoth, func(echo embd.DigitalPin) {
 			read, _ := echo.Read()
-			status <- read
+			status <- statusType{echo.N(), read}
 		})
 		if err != nil {
 			panic(err)
@@ -96,13 +99,13 @@ func distance() {
 	go measure(status)
 
 	for running {
-		for sensor = range data {
+		for sensor, val := range data {
 			triggers[sensor].Write(embd.High)
 			time.Sleep(1 * time.Millisecond)
 			triggers[sensor].Write(embd.Low)
 
 			time.Sleep(70 * time.Millisecond)
-			status <- timeout
+			status <- statusType{val.Echo, timeout}
 			time.Sleep(5 * time.Millisecond)
 		}
 	}
@@ -118,34 +121,37 @@ func distance() {
 	close(status)
 }
 
-func measure(status chan int) {
-	run := false
+func measure(status chan statusType) {
 	for val := range status {
-		if val == timeout {
-			run = false
+		sensor := messures[val.pin]
+		if val.value == timeout {
+			sensor.run = false
+			messures[val.pin] = sensor
 			continue
 		}
-		if val == measureStart {
-			run = true
-			startTime = time.Now()
+		if val.value == measureStart {
+			sensor.run = true
+			sensor.startTime = time.Now()
+			messures[val.pin] = sensor
 			continue
 		}
-		if !run {
+		if !sensor.run {
 			continue
 		}
 
-		duration := time.Since(startTime)
+		duration := time.Since(sensor.startTime)
 		distance := float64(duration.Nanoseconds()) / 10000000 * 171.5
-		if lastVal[sensor] > 0 {
-			distance = (lastVal[sensor]*2 + distance) / 3
+		if sensor.distance > 0 {
+			distance = (sensor.distance*2 + distance) / 3
 		}
-		lastVal[sensor] = distance
+		sensor.distance = distance
+		messures[val.pin] = sensor
 
 		value := strconv.FormatFloat(distance, 'f', 2, 64)
-		e := event.NewEvent(name, sensor, "distance")
+		e := event.NewEvent(name, sensor.name, "distance")
 		e.AddData("value", value)
-		e.AddData("posDegree", strconv.Itoa(data[sensor].Position.Degree))
-		e.AddData("posDistance", strconv.Itoa(data[sensor].Position.Distance))
+		e.AddData("posDegree", strconv.Itoa(data[sensor.name].Position.Degree))
+		e.AddData("posDistance", strconv.Itoa(data[sensor.name].Position.Distance))
 		go e.SendEventToAll()
 	}
 }

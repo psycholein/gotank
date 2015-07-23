@@ -77,7 +77,7 @@ func (h *MPU6050Driver) GetGyroscope() (x int16, y int16, z int16) {
 }
 
 func (h *MPU6050Driver) GetAccelerometer() (x int16, y int16, z int16) {
-	return h.Gyroscope.X, h.Gyroscope.Y, h.Gyroscope.Z
+	return h.Accelerometer.X, h.Accelerometer.Y, h.Accelerometer.Z
 }
 
 func (h *MPU6050Driver) GetTemperature() (celsius float64) {

@@ -2,3 +2,4 @@ modules:
   - motorshield
   - ultrasonic
   - accelerometer
+  - compass

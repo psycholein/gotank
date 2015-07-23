@@ -26,7 +26,7 @@ var running = true
 
 func main() {
 	defer end()
-	runtime.GOMAXPROCS(10)
+	runtime.GOMAXPROCS(20)
 	embd.InitGPIO()
 
 	handleCtrlC()

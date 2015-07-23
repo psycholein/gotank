@@ -18,12 +18,11 @@ type conf struct {
 
 var (
 	running       = false
-	data          map[string]conf
-	accelerometer map[string]*mpu6050.MPU6050Driver
+	data          = make(map[string]conf)
+	accelerometer = make(map[string]*mpu6050.MPU6050Driver)
 )
 
 func Register() {
-	data = make(map[string]conf)
 	m := modules.Module{name, accelerometerModule{}, true}
 	m.Register()
 }
@@ -57,7 +56,6 @@ func (m accelerometerModule) Active() []string {
 }
 
 func read() {
-	accelerometer = make(map[string]*mpu6050.MPU6050Driver)
 	for key := range data {
 		accelerometer[key] = mpu6050.NewMPU6050Driver(embd.NewI2CBus(1))
 	}

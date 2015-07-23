@@ -28,15 +28,18 @@ type conf struct {
 var (
 	running   = false
 	startTime = time.Now()
-	data      map[string]conf
+	data      = make(map[string]conf)
 	status    chan int
 	sensor    string
-	lastVal   map[string]float64
+	lastVal   = make(map[string]float64)
+	messures  = make(map[int]struct {
+		distance float64
+		run      bool
+		value    int
+	})
 )
 
 func Register() {
-	data = make(map[string]conf)
-	lastVal = make(map[string]float64)
 	m := modules.Module{name, ultrasonicModule{}, true}
 	m.Register()
 }
@@ -78,7 +81,7 @@ func distance() {
 		triggers[sensor], _ = embd.NewDigitalPin(value.Trigger)
 		triggers[sensor].SetDirection(embd.Out)
 
-		status = make(chan int, 1)
+		status = make(chan int)
 		err := echos[sensor].Watch(embd.EdgeBoth, func(echo embd.DigitalPin) {
 			read, _ := echo.Read()
 			status <- read
@@ -95,10 +98,10 @@ func distance() {
 	for running {
 		for sensor = range data {
 			triggers[sensor].Write(embd.High)
-			time.Sleep(50 * time.Microsecond)
+			time.Sleep(1 * time.Millisecond)
 			triggers[sensor].Write(embd.Low)
 
-			time.Sleep(75 * time.Millisecond)
+			time.Sleep(70 * time.Millisecond)
 			status <- timeout
 			time.Sleep(5 * time.Millisecond)
 		}
@@ -130,6 +133,7 @@ func measure(status chan int) {
 		if !run {
 			continue
 		}
+
 		duration := time.Since(startTime)
 		distance := float64(duration.Nanoseconds()) / 10000000 * 171.5
 		if lastVal[sensor] > 0 {
@@ -142,6 +146,6 @@ func measure(status chan int) {
 		e.AddData("value", value)
 		e.AddData("posDegree", strconv.Itoa(data[sensor].Position.Degree))
 		e.AddData("posDistance", strconv.Itoa(data[sensor].Position.Distance))
-		e.SendEventToAll()
+		go e.SendEventToAll()
 	}
 }

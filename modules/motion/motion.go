@@ -28,13 +28,12 @@ type statusType struct {
 
 var (
 	running = false
-	data    map[string]conf
-	status  chan statusType
+	data    = make(map[string]conf)
+	status  = make(chan statusType)
 	sensor  string
 )
 
 func Register() {
-	data = make(map[string]conf)
 	m := modules.Module{name, motionModule{}, true}
 	m.Register()
 }
@@ -74,7 +73,6 @@ func watch() {
 		inputs[key], _ = embd.NewDigitalPin(value.Input)
 		inputs[key].SetDirection(embd.In)
 
-		status = make(chan statusType, 1)
 		err := inputs[key].Watch(embd.EdgeBoth, func(input embd.DigitalPin) {
 			read, _ := input.Read()
 			status <- statusType{read, input.N()}

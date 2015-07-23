@@ -19,12 +19,11 @@ type conf struct {
 
 var (
 	running = false
-	data    map[string]conf
-	compass map[string]*hmc5883l.HMC5883LDriver
+	data    = make(map[string]conf)
+	compass = make(map[string]*hmc5883l.HMC5883LDriver)
 )
 
 func Register() {
-	data = make(map[string]conf)
 	m := modules.Module{name, compassModule{}, true}
 	m.Register()
 }
@@ -58,7 +57,6 @@ func (m compassModule) Active() []string {
 }
 
 func read() {
-	compass = make(map[string]*hmc5883l.HMC5883LDriver)
 	for key := range data {
 		compass[key] = hmc5883l.NewHMC5883LDriver(embd.NewI2CBus(1))
 	}

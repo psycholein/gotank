@@ -3,3 +3,4 @@ modules:
   - ultrasonic
   - accelerometer
   - compass
+  - webcam

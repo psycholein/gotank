@@ -9,6 +9,7 @@ import (
 	"gotank/modules/motion"
 	"gotank/modules/motorshield"
 	"gotank/modules/ultrasonic"
+	"gotank/modules/webcam"
 )
 
 type mainConfig struct {
@@ -21,6 +22,7 @@ func registerModules() {
 	motion.Register()
 	compass.Register()
 	accelerometer.Register()
+	webcam.Register()
 }
 
 func initModules() {

@@ -1,0 +1,2 @@
+webcam1:
+  device: /dev/video0

@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"gotank/event"
 	"gotank/modules"
+	"os/exec"
 )
 
 const name = "webcam"
@@ -24,7 +25,6 @@ func Register() {
 }
 
 func (m webcamModule) Config() interface{} {
-	fmt.Println("Read webcam config")
 	return &data
 }
 
@@ -35,6 +35,7 @@ func (m webcamModule) Start() {
 		e.AddData("start", "1")
 		e.SendEventToWeb()
 	}
+	go mjpgStreamer()
 }
 
 func (m webcamModule) Stop() {
@@ -47,9 +48,6 @@ func (m webcamModule) Stop() {
 }
 
 func (m webcamModule) GetEvent(e event.Event) {
-	if e.Task == "get" {
-		sendImg(e.Name)
-	}
 }
 
 func (m webcamModule) Active() []string {
@@ -64,6 +62,10 @@ func (m webcamModule) Active() []string {
 	return active
 }
 
-func sendImg(key string) {
-	// TODO
+func mjpgStreamer() {
+	cmd := "mjpg_streamer"
+	input := "input_uvc.so -d /dev/video0 -l off -r 320x240 -f 25"
+	output := "output_http.so -p 8080"
+	exec.Command(cmd, "-i", input, "-o", output).Run()
+	fmt.Println("webcam call")
 }

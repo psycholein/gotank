@@ -9,36 +9,20 @@
     extend(Webcam, superClass);
 
     function Webcam() {
-      this.router = bind(this.router, this);
       this.config = bind(this.config, this);
-      this.getPicture = bind(this.getPicture, this);
       this.afterInit = bind(this.afterInit, this);
       return Webcam.__super__.constructor.apply(this, arguments);
     }
 
     Webcam.prototype.afterInit = function() {
-      return setTimeout((function() {
-        return this.getPicture;
-      }), 1000);
-    };
-
-    Webcam.prototype.getPicture = function() {
-      console.log('get picture');
-      return this.event.send(this.module, this.name, "get", {});
+      var $module, img;
+      img = "<image src='http://192.168.0.226:8080/?action=stream' />";
+      $module = $(this.selector).filter("[data-name='" + this.name + "']");
+      return $module.find('.img').html(img);
     };
 
     Webcam.prototype.config = function() {
       return this.position = "left";
-    };
-
-    Webcam.prototype.router = function(event) {
-      var $module, img;
-      switch (event.Task) {
-        case "img":
-          img = "<image src='" + event.Data.img + "' />";
-          $module = $(this.selector).filter("[data-name='" + event.Name + "']");
-          return $module.find('.img').html(img);
-      }
     };
 
     return Webcam;

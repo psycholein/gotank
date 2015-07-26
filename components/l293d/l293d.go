@@ -1,3 +1,15 @@
+/************************************
+Motorshield-Pins:
+- latch 12
+- clk 4
+- enable 7
+- data 8
+- motor_1_pwm 11
+- motor_2_pwm 3
+- motor_3_pwm 5
+- motor_4_pwm 6
+*************************************/
+
 package l293d
 
 import (

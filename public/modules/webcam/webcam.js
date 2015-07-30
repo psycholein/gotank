@@ -16,7 +16,7 @@
 
     Webcam.prototype.afterInit = function() {
       var $module, img;
-      img = "<image src='http://192.168.0.226:8080/?action=stream' />";
+      img = "<image src='http://" + document.location.hostname + ":8080/?action=stream' />";
       $module = $(this.selector).filter("[data-name='" + this.name + "']");
       return $module.find('.img').html(img);
     };

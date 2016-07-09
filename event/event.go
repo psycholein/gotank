@@ -59,20 +59,20 @@ func handleEvents() {
 		if ec.location == all || ec.location == local {
 			if items, ok := register[ec.event.Module]; ok {
 				for _, item := range items {
-					item(ec.event)
+					go item(ec.event)
 				}
 			}
 		}
 		if ec.location == all || ec.location == web {
 			if items, ok := register["_web"]; ok {
 				for _, item := range items {
-					item(ec.event)
+					go item(ec.event)
 				}
 			}
 		}
 		if items, ok := register["_all"]; ok {
 			for _, item := range items {
-				item(ec.event)
+				go item(ec.event)
 			}
 		}
 	}
